@@ -21,27 +21,21 @@ export async function createTransaction(req, res){
   }
 };
 
-// Get Single Transaction
-export const getTransactionsByUserId = async (req, res) => {
+
+
+export async function getTransactionsByUserId(req, res) {
   try {
-    const transaction = await Transaction.findById(req.params.id);
-
-    if (!transaction) {
-      return res.status(404).json({
-        success: false,
-        message: "Transaction not found",
-      });
-    }
-
-    res.status(200).json(transaction);
+   const transaction = await Transaction.findOne(req.params.id);
+    if (!transaction) return res.status(404).json({ message: "Transaction not found!" });
+    res.json(transaction);
   } catch (error) {
-    console.log("Error getting the transactions", error);
+     console.log("Error getting the transactions", error);
     res.status(500).json({ message: "Internal server error" });
   }
 }
 
 // Update Transaction
-export const updateTransaction = async (req, res) => {
+export async function  updateTransaction (req, res){
   try {
     const transaction = await Transaction.findByIdAndUpdate(
       req.params.id,
@@ -72,7 +66,7 @@ export const updateTransaction = async (req, res) => {
 };
 
 // Delete Transaction
-export const deleteTransaction = async (req, res) => {
+export async function deleteTransaction(req, res) {
   try {
     const transaction = await Transaction.findByIdAndDelete(
       req.params.id
