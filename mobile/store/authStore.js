@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "../constants/api";
 
 export const useAuthStore = create((set) => ({
-  user: null,
+  newUser: null,
   token: null,
   isLoading: false,
   isCheckingAuth: true,
@@ -29,10 +29,10 @@ export const useAuthStore = create((set) => ({
 
       if (!response.ok) throw new Error(data.message || "Something went wrong");
 
-      await AsyncStorage.setItem("user", JSON.stringify(data.user));
+      await AsyncStorage.setItem("newUser", JSON.stringify(data.newUser));
       await AsyncStorage.setItem("token", data.token);
 
-      set({ token: data.token, user: data.user, isLoading: false });
+      set({ token: data.token, newUser: data.newUser, isLoading: false });
 
       return { success: true };
     } catch (error) {
@@ -60,10 +60,10 @@ export const useAuthStore = create((set) => ({
 
       if (!response.ok) throw new Error(data.message || "Something went wrong");
 
-      await AsyncStorage.setItem("user", JSON.stringify(data.user));
+      await AsyncStorage.setItem("newUser", JSON.stringify(data.newUser));
       await AsyncStorage.setItem("token", data.token);
 
-      set({ token: data.token, user: data.user, isLoading: false });
+      set({ token: data.token, newUser: data.newUser, isLoading: false });
 
       return { success: true };
     } catch (error) {
@@ -75,10 +75,10 @@ export const useAuthStore = create((set) => ({
   checkAuth: async () => {
     try {
       const token = await AsyncStorage.getItem("token");
-      const userJson = await AsyncStorage.getItem("user");
-      const user = userJson ? JSON.parse(userJson) : null;
+      const newUserJson = await AsyncStorage.getItem("newUser");
+      const newUser = newUserJson ? JSON.parse(newUserJson) : null;
 
-      set({ token, user });
+      set({ token, newUser });
     } catch (error) {
       console.log("Auth check failed", error);
     } finally {
@@ -88,7 +88,7 @@ export const useAuthStore = create((set) => ({
 
   logout: async () => {
     await AsyncStorage.removeItem("token");
-    await AsyncStorage.removeItem("user");
-    set({ token: null, user: null });
+    await AsyncStorage.removeItem("newUser");
+    set({ token: null, newUser: null });
   },
 }));
