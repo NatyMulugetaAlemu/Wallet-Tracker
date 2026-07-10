@@ -1,9 +1,8 @@
 import Transaction from "../models/transaction.model.js";
 
-export async function createTransaction(req, res){
+export async function createTransaction(req, res) {
   try {
     const { title, amount, category } = req.body;
-
     const transaction = new Transaction({
       title,
       amount,
@@ -11,8 +10,7 @@ export async function createTransaction(req, res){
       user: req.user._id,
     });
 
-     const savedTransaction = await transaction.save();
-
+    const savedTransaction = await transaction.save();
     res.status(201).json(savedTransaction);
   } catch (error) {
     res.status(500).json({
@@ -21,66 +19,66 @@ export async function createTransaction(req, res){
   }
 };
 
-
-
-export async function getTransactionsByUserId(req, res) {
+export async function getAllTransactions(req, res) {
   try {
-   const transaction = await Transaction.findOne(req.params.id);
-    if (!transaction) return res.status(404).json({ message: "Transaction not found!" });
-    res.json(transaction);
-  } catch (error) {
-     console.log("Error getting the transactions", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-}
+    const transactions = await Transaction.find({
+      user: req.user._id,
+    }).sort({ createdAt: -1 });
 
-// Update Transaction
-export async function  updateTransaction (req, res){
-  try {
-    const transaction = await Transaction.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
-
-    if (!transaction) {
-      return res.status(404).json({
-        success: false,
-        message: "Transaction not found",
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      data: transaction,
-    });
+    res.status(200).json(transactions);
   } catch (error) {
     res.status(500).json({
-      success: false,
       message: error.message,
     });
   }
 };
 
-// Delete Transaction
-export async function deleteTransaction(req, res) {
+export async function updateTransaction(req, res) {
   try {
-    const transaction = await Transaction.findByIdAndDelete(
-      req.params.id
+    const { title, amount, category } = req.body;
+    const updatedTransaction = await Transaction.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        user: req.user._id
+      },
+      req.body,
+      {
+        title,
+        amount,
+        category
+      },
+      {
+        new: true,
+      }
     );
 
-    if (!transaction) {
+    if (!updatedTransaction) {
       return res.status(404).json({
-        success: false,
         message: "Transaction not found",
       });
     }
 
+    res.status(200).json({message:"Transaction updated successfully",updatedTransaction});
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+export async function deleteTransaction(req, res) {
+  try {
+    const deleteTransaction = await Transaction.findByIdAndDelete({
+      _id: req.params.id,
+      user: req.user._id,
+    });
+
+    if (!deleteTransaction) {
+      return res.status(404).json({
+        message: "Transaction not found",
+      });
+    }
     res.status(200).json({
-      success: true,
       message: "Transaction deleted successfully",
     });
   } catch (error) {
@@ -91,36 +89,40 @@ export async function deleteTransaction(req, res) {
   }
 };
 
-
-
-export async function getSummaryByUserId(req, res) {
+export async function getUserSummary(req, res) {
   try {
-    const { userId } = req.params;
+    const transactions = await Transaction.find({
+      user: req.user._id,
+    });
 
-    const balanceResult = await sql`
-      SELECT COALESCE(SUM(amount), 0) as balance FROM transactions WHERE user_id = ${userId}
-    `;
+    const balance = transactions.reduce(
+      (sum, t) => sum + t.amount,
+      0
+    );
 
-    const incomeResult = await sql`
-      SELECT COALESCE(SUM(amount), 0) as income FROM transactions
-      WHERE user_id = ${userId} AND amount > 0
-    `;
+    const income = transactions
+      .filter((t) => t.amount > 0)
+      .reduce((sum, t) => sum + t.amount, 0);
 
-    const expensesResult = await sql`
-      SELECT COALESCE(SUM(amount), 0) as expenses FROM transactions
-      WHERE user_id = ${userId} AND amount < 0
-    `;
+    const expenses = transactions
+      .filter((t) => t.amount < 0)
+      .reduce((sum, t) => sum + t.amount, 0);
 
     res.status(200).json({
-      balance: balanceResult[0].balance,
-      income: incomeResult[0].income,
-      expenses: expensesResult[0].expenses,
+      balance,
+      income,
+      expenses,
     });
   } catch (error) {
-    console.log("Error gettin the summary", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({
+      message: error.message,
+    });
   }
-}
+};
+
+
+
+
 
 
 
