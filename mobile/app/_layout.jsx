@@ -8,7 +8,7 @@ import { useState } from "react";
 export default function RootLayout() {
   const router = useRouter();
   const segments = useSegments();
-  const { checkAuth, user, token } = useAuthStore();
+  const { checkAuth, newUser, token } = useAuthStore();
 
    const [isReady, setIsReady] = useState(false);
 
@@ -25,14 +25,14 @@ export default function RootLayout() {
     if (!isReady) return;
 
     const inAuthScreen = segments[0] === "(auth)";
-    const isSignedIn = !!(user && token);
+    const isSignedIn = !!(newUser && token);
 
     if (!isSignedIn && !inAuthScreen) {
       router.replace("/(auth)");
     } else if (isSignedIn && inAuthScreen) {
       router.replace("/(tabs)");
     }
-  }, [isReady, user, token, segments]);
+  }, [isReady, newUser, token, segments]);
 
   if (!isReady) {
     return null; // or your loading screen
