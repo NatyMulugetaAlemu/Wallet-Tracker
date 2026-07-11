@@ -1,141 +1,162 @@
 // styles/create.styles.js
 import { StyleSheet } from "react-native";
-import COLORS from "../../constants/colors";
+import { COLORS } from "../../constants/colors";
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    backgroundColor: COLORS.background,
-    padding: 16,
-  },
-  scrollViewStyle: {
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  card: {
-    backgroundColor: COLORS.cardBackground,
-    borderRadius: 16,
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 20,
-    marginVertical: 16,
-    shadowColor: COLORS.black,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: COLORS.text,
+  },
+  backButton: {
+    padding: 5,
+  },
+  saveButtonContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  saveButtonDisabled: {
+    opacity: 0.5,
+  },
+  saveButton: {
+    fontSize: 16,
+    color: COLORS.primary,
+    fontWeight: "600",
+  },
+  card: {
+    backgroundColor: COLORS.card,
+    margin: 16,
+    borderRadius: 16,
+    padding: 16,
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 8,
+    shadowRadius: 4,
     elevation: 3,
+  },
+  typeSelector: {
+    flexDirection: "row",
+    marginBottom: 20,
+    gap: 10,
+  },
+  typeButton: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    borderRadius: 25,
     borderWidth: 1,
     borderColor: COLORS.border,
   },
-  header: {
+  typeButtonActive: {
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primary,
+  },
+  typeIcon: {
+    marginRight: 8,
+  },
+  typeButtonText: {
+    color: COLORS.text,
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  typeButtonTextActive: {
+    color: COLORS.white,
+  },
+  amountContainer: {
+    flexDirection: "row",
     alignItems: "center",
-    marginBottom: 24,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: COLORS.textPrimary,
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: COLORS.textSecondary,
-    textAlign: "center",
-  },
-  form: {
-    marginBottom: 16,
-  },
-  formGroup: {
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+    paddingBottom: 16,
     marginBottom: 20,
   },
-  label: {
-    fontSize: 14,
-    marginBottom: 8,
-    color: COLORS.textPrimary,
-    fontWeight: "500",
+  currencySymbol: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: COLORS.text,
+    marginRight: 8,
+  },
+  amountInput: {
+    flex: 1,
+    fontSize: 36,
+    fontWeight: "bold",
+    color: COLORS.text,
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: COLORS.inputBackground,
-    borderRadius: 12,
     borderWidth: 1,
     borderColor: COLORS.border,
-    paddingHorizontal: 12,
+    borderRadius: 12,
+    padding: 4,
+    marginBottom: 20,
+    backgroundColor: COLORS.white,
   },
   inputIcon: {
-    marginRight: 10,
+    marginHorizontal: 12,
   },
   input: {
     flex: 1,
-    height: 48,
-    color: COLORS.textDark,
-  },
-  textArea: {
-    backgroundColor: COLORS.inputBackground,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: COLORS.border,
     padding: 12,
-    height: 100,
-    color: COLORS.textDark,
-  },
-  ratingContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    backgroundColor: COLORS.inputBackground,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    padding: 8,
-  },
-  starButton: {
-    padding: 8,
-  },
-  imagePicker: {
-    width: "100%",
-    height: 200,
-    backgroundColor: COLORS.inputBackground,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    overflow: "hidden",
-  },
-  previewImage: {
-    width: "100%",
-    height: "100%",
-  },
-  placeholderContainer: {
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  placeholderText: {
-    color: COLORS.textSecondary,
-    marginTop: 8,
-  },
-  button: {
-    backgroundColor: COLORS.primary,
-    borderRadius: 12,
-    height: 50,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 16,
-    shadowColor: COLORS.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  buttonText: {
-    color: COLORS.white,
     fontSize: 16,
-    fontWeight: "600",
+    color: COLORS.text,
   },
-  buttonIcon: {
-    marginRight: 8,
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: COLORS.text,
+    marginBottom: 15,
+    marginTop: 10,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  categoryGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+  },
+  categoryButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    backgroundColor: COLORS.white,
+  },
+  categoryButtonActive: {
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primary,
+  },
+  categoryIcon: {
+    marginRight: 6,
+  },
+  categoryButtonText: {
+    color: COLORS.text,
+    fontSize: 14,
+  },
+  categoryButtonTextActive: {
+    color: COLORS.white,
+  },
+  loadingContainer: {
+    padding: 20,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
-
-export default styles;

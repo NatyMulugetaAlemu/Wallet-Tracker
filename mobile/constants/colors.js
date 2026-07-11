@@ -1,67 +1,62 @@
-// FOREST
-const COLORS = {
-  primary: "#4CAF50",
-  textPrimary: "#2e5a2e",
-  textSecondary: "#688f68",
-  textDark: "#1b361b",
-  placeholderText: "#767676",
-  background: "#e8f5e9",
-  cardBackground: "#f1f8f2",
-  inputBackground: "#f4faf5",
-  border: "#c8e6c9",
-  white: "#ffffff",
-  black: "#000000",
+// constants/colors.js
+const coffeeTheme = {
+  primary: "#8B593E",
+  background: "#FFF8F3",
+  text: "#4A3428",
+  border: "#E5D3B7",
+  white: "#FFFFFF",
+  textLight: "#9A8478",
+  expense: "#E74C3C",
+  income: "#2ECC71",
+  card: "#FFFFFF",
+  shadow: "#000000",
 };
 
-// RETRO
-/*
-const COLORS = {
-  primary: "#e17055",
-  textPrimary: "#784e2d",
-  textSecondary: "#a58e7c",
-  textDark: "#50372a",
-  placeholderText: "#767676",
-  background: "#ede1d1",
-  cardBackground: "#faf5eb",
-  inputBackground: "#f7f2ea",
-  border: "#e2d6c1",
-  white: "#ffffff",
-  black: "#000000",
+const forestTheme = {
+  primary: "#2E7D32",
+  background: "#E8F5E9",
+  text: "#1B5E20",
+  border: "#C8E6C9",
+  white: "#FFFFFF",
+  textLight: "#66BB6A",
+  expense: "#C62828",
+  income: "#388E3C",
+  card: "#FFFFFF",
+  shadow: "#000000",
 };
-*/
 
-// OCEAN
-/*
-const COLORS = {
-  primary: "#1976D2", 
-  textPrimary: "#1a4971",
-  textSecondary: "#6d93b8", 
-  textDark: "#0d2b43", 
-  placeholderText: "#767676",
-  background: "#e3f2fd", 
-  cardBackground: "#f5f9ff",
-  inputBackground: "#f0f8ff", 
-  border: "#bbdefb",
-  white: "#ffffff",
-  black: "#000000",
+const purpleTheme = {
+  primary: "#6A1B9A",
+  background: "#F3E5F5",
+  text: "#4A148C",
+  border: "#D1C4E9",
+  white: "#FFFFFF",
+  textLight: "#BA68C8",
+  expense: "#D32F2F",
+  income: "#388E3C",
+  card: "#FFFFFF",
+  shadow: "#000000",
 };
-*/
 
-// BLOSSOM
-/*
-const COLORS = {
-  primary: "#EC407A", 
-  textPrimary: "#7d2150", 
-  textSecondary: "#b06a8f", 
-  textDark: "#5a1836", 
-  placeholderText: "#767676",
-  background: "#fce4ec", 
-  cardBackground: "#fff5f8", 
-  inputBackground: "#fef8fa", 
-  border: "#f8bbd0",
-  white: "#ffffff",
-  black: "#000000",
+const oceanTheme = {
+  primary: "#0277BD",
+  background: "#E1F5FE",
+  text: "#01579B",
+  border: "#B3E5FC",
+  white: "#FFFFFF",
+  textLight: "#4FC3F7",
+  expense: "#EF5350",
+  income: "#26A69A",
+  card: "#FFFFFF",
+  shadow: "#000000",
 };
-*/
 
-export default COLORS;
+export const THEMES = {
+  coffee: coffeeTheme,
+  forest: forestTheme,
+  purple: purpleTheme,
+  ocean: oceanTheme,
+};
+
+// 👇 change this to switch theme
+export const COLORS = THEMES.coffee;

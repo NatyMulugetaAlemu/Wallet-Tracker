@@ -1,5 +1,5 @@
 import { View, Text, ActivityIndicator } from "react-native";
-import COLORS from "../constants/colors";
+import {COLORS} from "../constants/colors";
 export default function Loader({ size = "large" }) {
   return (
     <View

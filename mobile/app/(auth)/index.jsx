@@ -1,21 +1,11 @@
-import {
-  View,
-  Text,
-  Image,
-  TextInput,
-  TouchableOpacity,
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  Alert,
-} from "react-native";
+import {View,Text,Image,TextInput,TouchableOpacity,ActivityIndicator,Platform,Alert,}from "react-native";
 import { Link, useRouter } from "expo-router";
-import styles from "../../assets/styles/login.styles";
 import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import COLORS from "../../constants/colors";
-
+import {COLORS} from "../../constants/colors";
 import { useAuthStore } from "../../store/authStore";
+import styles from "../../assets/styles/auth.styles";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -39,21 +29,25 @@ const handleLogin = async () => {
   if (isCheckingAuth) return null;
 
   return (
-    <KeyboardAvoidingView
+
+     <KeyboardAwareScrollView
       style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      contentContainerStyle={{ flexGrow: 1 }}
+      enableOnAndroid={true}
+      enableAutomaticScroll={true}
     >
+
       <View style={styles.container}>
         {/* ILLUSTRATION */}
         <View style={styles.topIllustration}>
           <Image
-            source={require("../../assets/images/i.png")}
+            source={require("../../assets/images/revenue-i4.png")}
             style={styles.illustrationImage}
             resizeMode="contain"
           />
         </View>
 
-        <View style={styles.card}>
+       
           <View style={styles.formContainer}>
             {/* EMAIL */}
             <View style={styles.inputGroup}>
@@ -129,8 +123,9 @@ const handleLogin = async () => {
               </Link>
             </View>
           </View>
-        </View>
+      
       </View>
-    </KeyboardAvoidingView>
+    {/* </KeyboardAvoidingView> */}
+    </KeyboardAwareScrollView>
   );
 }

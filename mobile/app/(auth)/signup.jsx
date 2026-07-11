@@ -1,10 +1,11 @@
-import {View,Text,Platform,KeyboardAvoidingView,TextInput,TouchableOpacity,ActivityIndicator,Alert,} from "react-native";
-import styles from "../../assets/styles/signup.styles";
+import { View, Text, Image, Platform, KeyboardAvoidingView, TextInput, TouchableOpacity, ActivityIndicator, Alert, } from "react-native";
+import styles from "../../assets/styles/auth.styles";
 import { Ionicons } from "@expo/vector-icons";
-import COLORS from "../../constants/colors";
+import { COLORS } from "../../constants/colors";
 import { useState } from "react";
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useAuthStore } from "../../store/authStore";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function Signup() {
   const [username, setUsername] = useState("");
@@ -23,112 +24,144 @@ export default function Signup() {
   };
 
   return (
-    <KeyboardAvoidingView
+    <KeyboardAwareScrollView
       style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      contentContainerStyle={{ flexGrow: 1 }}
+      enableOnAndroid={true}
+      enableAutomaticScroll={true}
     >
+      
       <View style={styles.container}>
-        <View style={styles.card}>
-          {/* HEADER */}
-          <View style={styles.header}>
-            <Text style={styles.title}>Book-Rec📚</Text>
-            <Text style={styles.subtitle}>Share your favorite reads</Text>
+        {/* ILLUSTRATION */}
+        <View style={styles.topIllustration}>
+          <Image
+            source={require("../../assets/images/revenue-i4.png")}
+            style={styles.illustrationImage}
+            resizeMode="contain"
+          />
+        </View>
+
+
+        <View style={styles.formContainer}>
+          {/* username */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Username</Text>
+            <View style={styles.inputContainer}>
+              <Ionicons
+                name="mail-outline"
+                size={20}
+                color={COLORS.primary}
+                style={styles.inputIcon}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your username"
+                placeholderTextColor={COLORS.placeholderText}
+                value={username}
+                onChangeText={setUsername}
+              // keyboardType="email-address"
+              // autoCapitalize="none"
+              />
+            </View>
           </View>
 
-          <View style={styles.formContainer}>
-            {/* USERNAME INPUT */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Username</Text>
-              <View style={styles.inputContainer}>
+
+          {/* EMAIL */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Email</Text>
+            <View style={styles.inputContainer}>
+              <Ionicons
+                name="mail-outline"
+                size={20}
+                color={COLORS.primary}
+                style={styles.inputIcon}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your email"
+                placeholderTextColor={COLORS.placeholderText}
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+            </View>
+          </View>
+
+          {/* PASSWORD */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Password</Text>
+            <View style={styles.inputContainer}>
+              {/* LEFT ICON */}
+              <Ionicons
+                name="lock-closed-outline"
+                size={20}
+                color={COLORS.primary}
+                style={styles.inputIcon}
+              />
+              {/* INPUT */}
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your password"
+                placeholderTextColor={COLORS.placeholderText}
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
+              />
+
+              <TouchableOpacity
+                onPress={() => setShowPassword(!showPassword)}
+                style={styles.eyeIcon}
+              >
                 <Ionicons
-                  name="person-outline"
+                  name={showPassword ? "eye-outline" : "eye-off-outline"}
                   size={20}
                   color={COLORS.primary}
-                  style={styles.inputIcon}
                 />
-                <TextInput
-                  style={styles.input}
-                  placeholder="johndoe"
-                  placeholderTextColor={COLORS.placeholderText}
-                  value={username}
-                  onChangeText={setUsername}
-                  autoCapitalize="none"
-                />
-              </View>
-            </View>
-
-            {/* EMAIL INPUT */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Email</Text>
-              <View style={styles.inputContainer}>
-                <Ionicons
-                  name="mail-outline"
-                  size={20}
-                  color={COLORS.primary}
-                  style={styles.inputIcon}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="johndoe@gmail.com"
-                  value={email}
-                  placeholderTextColor={COLORS.placeholderText}
-                  onChangeText={setEmail}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                />
-              </View>
-            </View>
-
-            {/* PASSWORD INPUT */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Password</Text>
-              <View style={styles.inputContainer}>
-                <Ionicons
-                  name="lock-closed-outline"
-                  size={20}
-                  color={COLORS.primary}
-                  style={styles.inputIcon}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="******"
-                  placeholderTextColor={COLORS.placeholderText}
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry={!showPassword}
-                />
-                <TouchableOpacity
-                  onPress={() => setShowPassword(!showPassword)}
-                  style={styles.eyeIcon}
-                >
-                  <Ionicons
-                    name={showPassword ? "eye-outline" : "eye-off-outline"}
-                    size={20}
-                    color={COLORS.primary}
-                  />
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            {/* SIGNUP BUTTON */}
-            <TouchableOpacity style={styles.button} onPress={handleSignUp} disabled={isLoading}>
-              {isLoading ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text style={styles.buttonText}>Sign Up</Text>
-              )}
-            </TouchableOpacity>
-
-            {/* FOOTER */}
-            <View style={styles.footer}>
-              <Text style={styles.footerText}>Already have an account?</Text>
-              <TouchableOpacity onPress={() => router.back()}>
-                <Text style={styles.link}>Login</Text>
               </TouchableOpacity>
             </View>
           </View>
+
+          <TouchableOpacity style={styles.button} onPress={handleSignUp} disabled={isLoading}>
+            {isLoading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>Sign Up</Text>
+            )}
+          </TouchableOpacity>
+
+          {/* FOOTER */}
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Already have an account?</Text>
+            <TouchableOpacity onPress={() => router.back()}>
+              <Text style={styles.link}>Login</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView >
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
