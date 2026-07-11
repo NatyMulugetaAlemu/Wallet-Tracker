@@ -6,12 +6,15 @@ import { useState } from "react";
 import { Link, useRouter } from "expo-router";
 import { useAuthStore } from "../../store/authStore";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Toast from "react-native-toast-message";
+
 
 export default function Signup() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
 
   const { newUser, isLoading, signup, token } = useAuthStore();
 
@@ -20,8 +23,20 @@ export default function Signup() {
   const handleSignUp = async () => {
     const result = await signup(username, email, password);
 
-    if (!result.success) Alert.alert("Error", result.error);
+    if (!result.success) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: result.error,
+        position: "top",
+        visibilityTime: 4000,
+      });
+
+      return;
+    }
   };
+
+
 
   return (
     <KeyboardAwareScrollView
@@ -30,7 +45,7 @@ export default function Signup() {
       enableOnAndroid={true}
       enableAutomaticScroll={true}
     >
-      
+
       <View style={styles.container}>
         {/* ILLUSTRATION */}
         <View style={styles.topIllustration}>
@@ -59,8 +74,7 @@ export default function Signup() {
                 placeholderTextColor={COLORS.placeholderText}
                 value={username}
                 onChangeText={setUsername}
-              // keyboardType="email-address"
-              // autoCapitalize="none"
+            
               />
             </View>
           </View>
@@ -121,6 +135,8 @@ export default function Signup() {
               </TouchableOpacity>
             </View>
           </View>
+
+
 
           <TouchableOpacity style={styles.button} onPress={handleSignUp} disabled={isLoading}>
             {isLoading ? (

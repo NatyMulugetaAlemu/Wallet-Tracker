@@ -10,6 +10,7 @@ const coffeeTheme = {
   income: "#2ECC71",
   card: "#FFFFFF",
   shadow: "#000000",
+  
 };
 
 const forestTheme = {

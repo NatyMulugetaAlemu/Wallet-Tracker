@@ -71,6 +71,22 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
+errorContainer: {
+  backgroundColor: "#F5E6D8",
+  borderWidth: 1,
+  borderColor: "#8B593E",
+  padding: 12,
+  borderRadius: 8,
+  marginBottom: 15,
+},
+
+errorText: {
+  color:COLORS.primary,
+  textAlign: "center",
+  fontSize: 14,
+  fontWeight: "600",
+},
+
 
   button: {
     backgroundColor: COLORS.primary,

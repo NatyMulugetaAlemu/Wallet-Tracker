@@ -6,6 +6,7 @@ import {COLORS} from "../../constants/colors";
 import { useAuthStore } from "../../store/authStore";
 import styles from "../../assets/styles/auth.styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Toast from "react-native-toast-message";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -22,7 +23,15 @@ const handleLogin = async () => {
   if (result.success) {
     router.replace("/(tabs)");
   } else {
-    Alert.alert("Error", result.error);
+    Toast.show({
+           type: "error",
+           text1: "Error",
+           text2: result.error,
+           position: "top",
+           visibilityTime: 4000,
+         });
+   
+         return;
   }
 };
 
