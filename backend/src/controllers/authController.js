@@ -67,13 +67,13 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email });
+    const newUser = await User.findOne({ email });
 
-    if (!user) {
+    if (!newUser) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    const isPasswordCorrect = await bcrypt.compare(password, newUser.password);
     if (!isPasswordCorrect) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
@@ -91,7 +91,7 @@ export const login = async (req, res) => {
 
     });
   } catch (error) {
-    console.log("Error in login controller", error.message);
+   console.error("Login Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };

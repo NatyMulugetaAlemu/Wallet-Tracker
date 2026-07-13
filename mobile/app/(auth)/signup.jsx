@@ -39,11 +39,16 @@ export default function Signup() {
 
 
   return (
+
     <KeyboardAwareScrollView
-      style={{ flex: 1 }}
-      contentContainerStyle={{ flexGrow: 1 }}
+      style={{ flex: 1, backgroundColor: '#fff' }}
+      contentContainerStyle={{
+        flexGrow: 1,
+        backgroundColor: COLORS.background,
+      }}
       enableOnAndroid={true}
       enableAutomaticScroll={true}
+      extraScrollHeight={80}
     >
 
       <View style={styles.container}>
@@ -74,7 +79,7 @@ export default function Signup() {
                 placeholderTextColor={COLORS.placeholderText}
                 value={username}
                 onChangeText={setUsername}
-            
+
               />
             </View>
           </View>

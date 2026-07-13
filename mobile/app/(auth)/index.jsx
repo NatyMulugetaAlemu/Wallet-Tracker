@@ -39,11 +39,15 @@ const handleLogin = async () => {
 
   return (
 
-     <KeyboardAwareScrollView
-      style={{ flex: 1 }}
-      contentContainerStyle={{ flexGrow: 1 }}
+      <KeyboardAwareScrollView
+      style={{ flex: 1, backgroundColor: '#fff' }}
+      contentContainerStyle={{
+        flexGrow: 1,
+        backgroundColor: COLORS.background,
+      }}
       enableOnAndroid={true}
       enableAutomaticScroll={true}
+      extraScrollHeight={40}
     >
 
       <View style={styles.container}>

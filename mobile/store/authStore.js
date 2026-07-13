@@ -45,6 +45,7 @@ export const useAuthStore = create((set) => ({
     set({ isLoading: true });
 
     try {
+       console.time("login-request");
       const response = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: {
@@ -56,6 +57,7 @@ export const useAuthStore = create((set) => ({
         }),
       });
 
+      console.timeEnd("login-request");
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.message || "Something went wrong");
