@@ -1,4 +1,4 @@
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { Alert, FlatList, Image, RefreshControl, Text, TouchableOpacity, View } from "react-native";
 import SignOutButton from "../../components/SignOutButton";
 import { useTransactions } from "../../store/useTransactions";
@@ -9,7 +9,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { BalanceCard } from "../../components/BalanceCard";
 import { TransactionItem } from "../../components/TransactionItem";
 import NoTransactionsFound from "../../components/NoTransactionsFound";
-import { API_URL } from "../../constants/api";
 import { useAuthStore } from "../../store/authStore";
 
 export default function Page() {
@@ -17,7 +16,7 @@ export default function Page() {
   const [refreshing, setRefreshing] = useState(false);
 
   const { transactions, summary, isLoading, loadData, deleteTransaction } = useTransactions();
-  const { authUser } = useAuthStore();
+const { user } = useAuthStore();
 
 
 
@@ -72,14 +71,14 @@ export default function Page() {
             />
             <View style={styles.welcomeContainer}>
               <Text style={styles.welcomeText}>Welcome,</Text>
-              <Text style={styles.usernameText}>
-                {authUser?.username}
-              </Text>
+             <Text style={styles.usernameText}>
+  {user?.username}
+</Text>
             </View>
           </View>
           {/* RIGHT */}
           <View style={styles.headerRight}>
-            <TouchableOpacity style={styles.addButton} onPress={() => router.push("/create")}>
+            <TouchableOpacity style={styles.addButton} onPress={() => router.push("create")}>
               <Ionicons name="add" size={20} color="#FFF" />
               <Text style={styles.addButtonText}>Add</Text>
             </TouchableOpacity>

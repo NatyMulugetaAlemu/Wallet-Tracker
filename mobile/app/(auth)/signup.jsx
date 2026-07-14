@@ -1,56 +1,68 @@
-import { View, Text, Image, Platform, KeyboardAvoidingView, TextInput, TouchableOpacity, ActivityIndicator, Alert, } from "react-native";
-import styles from "../../assets/styles/auth.styles";
-import { Ionicons } from "@expo/vector-icons";
-import { COLORS } from "../../constants/colors";
+import {
+  View,
+  Text,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import { useState } from "react";
-import { Link, useRouter } from "expo-router";
-import { useAuthStore } from "../../store/authStore";
+import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import Toast from "react-native-toast-message";
 
+import styles from "../../assets/styles/auth.styles";
+import { COLORS } from "../../constants/colors";
+import { useAuthStore } from "../../store/authStore";
 
 export default function Signup() {
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const { isSigningUp, signup } = useAuthStore();
 
+  const { isSigningUp, signup } = useAuthStore();
   const router = useRouter();
 
   const handleSignUp = async () => {
-  const result = signup(formData);
-
-    if (!result.success) {
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: result.error,
-        position: "top",
-        visibilityTime: 4000,
-      });
-
+    if (!username.trim() || !email.trim() || !password.trim()) {
+      Alert.alert("Validation Error", "Please fill in all fields.");
       return;
+    }
+
+    if (password.length < 6) {
+      Alert.alert(
+        "Validation Error",
+        "Password must be at least 6 characters."
+      );
+      return;
+    }
+
+    const result = await signup({
+      username: username.trim(),
+      email: email.trim(),
+      password,
+    });
+
+    if (result.success) {
+      router.replace("/(tabs)");
+    } else {
+      Alert.alert("Signup Failed", result.error);
     }
   };
 
-
-
   return (
-
     <KeyboardAwareScrollView
-      style={{ flex: 1, backgroundColor: '#fff' }}
+      style={{ flex: 1, backgroundColor: "#fff" }}
       contentContainerStyle={{
         flexGrow: 1,
         backgroundColor: COLORS.background,
       }}
-      enableOnAndroid={true}
-      enableAutomaticScroll={true}
+      enableOnAndroid
+      enableAutomaticScroll
       extraScrollHeight={80}
     >
-
       <View style={styles.container}>
         {/* ILLUSTRATION */}
         <View style={styles.topIllustration}>
@@ -61,38 +73,34 @@ export default function Signup() {
           />
         </View>
 
-
         <View style={styles.formContainer}>
-          {/* username */}
+          {/* USERNAME */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Username</Text>
+
             <View style={styles.inputContainer}>
               <Ionicons
-                name="mail-outline"
+                name="person-outline"
                 size={20}
                 color={COLORS.primary}
                 style={styles.inputIcon}
               />
+
               <TextInput
                 style={styles.input}
                 placeholder="Enter your username"
                 placeholderTextColor={COLORS.placeholderText}
-                value={formData.username}
-                onChangeText={(text) =>
-                  setFormData({
-                    ...formData,
-                    username: text,
-                  })
-                }
-
+                value={username}
+                onChangeText={setUsername}
+                autoCapitalize="none"
               />
             </View>
           </View>
 
-
           {/* EMAIL */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Email</Text>
+
             <View style={styles.inputContainer}>
               <Ionicons
                 name="mail-outline"
@@ -100,19 +108,16 @@ export default function Signup() {
                 color={COLORS.primary}
                 style={styles.inputIcon}
               />
+
               <TextInput
                 style={styles.input}
                 placeholder="Enter your email"
                 placeholderTextColor={COLORS.placeholderText}
-                value={formData.email}
-                onChangeText={(text) =>
-                  setFormData({
-                    ...formData,
-                    email: text,
-                  })
-                }
+                value={email}
+                onChangeText={setEmail}
                 keyboardType="email-address"
                 autoCapitalize="none"
+                autoCorrect={false}
               />
             </View>
           </View>
@@ -120,26 +125,21 @@ export default function Signup() {
           {/* PASSWORD */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Password</Text>
+
             <View style={styles.inputContainer}>
-              {/* LEFT ICON */}
               <Ionicons
                 name="lock-closed-outline"
                 size={20}
                 color={COLORS.primary}
                 style={styles.inputIcon}
               />
-              {/* INPUT */}
+
               <TextInput
                 style={styles.input}
                 placeholder="Enter your password"
                 placeholderTextColor={COLORS.placeholderText}
-                value={formData.password}
-                onChangeText={(text) =>
-                  setFormData({
-                    ...formData,
-                    password: text,
-                  })
-                }
+                value={password}
+                onChangeText={setPassword}
                 secureTextEntry={!showPassword}
               />
 
@@ -156,9 +156,12 @@ export default function Signup() {
             </View>
           </View>
 
-
-
-          <TouchableOpacity style={styles.button} onPress={handleSignUp} disabled={isSigningUp}>
+          {/* SIGNUP BUTTON */}
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleSignUp}
+            disabled={isSigningUp}
+          >
             {isSigningUp ? (
               <ActivityIndicator color="#fff" />
             ) : (
@@ -168,36 +171,16 @@ export default function Signup() {
 
           {/* FOOTER */}
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Already have an account?</Text>
+            <Text style={styles.footerText}>
+              Already have an account?
+            </Text>
+
             <TouchableOpacity onPress={() => router.back()}>
               <Text style={styles.link}>Login</Text>
             </TouchableOpacity>
           </View>
         </View>
       </View>
-    </KeyboardAwareScrollView >
+    </KeyboardAwareScrollView>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

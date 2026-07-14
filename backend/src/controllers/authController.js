@@ -30,24 +30,27 @@ export const signup = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const newUser = new User({
+    const user = new User({
       username,
       email,
       password: hashedPassword,
     });
 
-    if (newUser) {
+    if (user) {
       // generate jwt token here
-      generateToken(newUser._id, res);
-      await newUser.save();
+      const token = generateToken(user._id, res);
+      await user.save();
 
 
       res.status(201).json({
-        id: newUser._id,
-        username: newUser.username,
-        email: newUser.email,
-        profilePic: newUser.profilePic,
-        createdAt: newUser.createdAt
+        token,
+        user: {
+          id: newUser._id,
+          username: newUser.username,
+          email: newUser.email,
+          profilePic: newUser.profilePic,
+          createdAt: newUser.createdAt
+        }
       });
 
 
@@ -65,24 +68,26 @@ export const login = async (req, res) => {
   try {
     const user = await User.findOne({ email });
 
-    if (user) {
+    if (!user) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const isPasswordCorrect = await bcrypt.compare(password, newUser.password);
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    generateToken(user._id, res);
+    const token = generateToken(user._id, res);
     res.status(201).json({
-     
+      token,
+      user: {
         id: newUser._id,
         username: newUser.username,
         email: newUser.email,
         profilePic: newUser.profilePic,
         createdAt: newUser.createdAt,
-    });
+      }
+      });
   } catch (error) {
     console.error("Login Error:", error);
     res.status(500).json({ message: "Internal Server Error" });

@@ -1,4 +1,4 @@
-import ErrorToast from "../../components/ErrorToast";
+import ErrorToast from "../components/ErrorToast";
 
 export const toastConfig = {
   error: ({ text1, text2 }) => (

@@ -1,116 +1,51 @@
-import { SplashScreen, Stack, useRouter, useSegments } from "expo-router";
+import { Stack, useRouter, useSegments } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import SafeScreen from "../components/SafeScreen";
 import { StatusBar } from "expo-status-bar";
-import { useAuthStore } from "../store/authStore";
 import { useEffect } from "react";
-import { useState } from "react";
+
+import SafeScreen from "../components/SafeScreen";
+import { useAuthStore } from "../store/authStore";
+
 export default function RootLayout() {
   const router = useRouter();
   const segments = useSegments();
-  const { checkAuth, newUser, token } = useAuthStore();
 
-   const [isReady, setIsReady] = useState(false);
+  const { checkAuth, user, isCheckingAuth } = useAuthStore();
 
- useEffect(() => {
-    const init = async () => {
-      await checkAuth();
-      setIsReady(true);
-    };
-
-    init();
+  useEffect(() => {
+    checkAuth();
   }, []);
 
   useEffect(() => {
-    if (!isReady) return;
+    if (isCheckingAuth) return;
 
-    const inAuthScreen = segments[0] === "(auth)";
-    const isSignedIn = !!(newUser && token);
+    const inAuthGroup = segments[0] === "(auth)";
+    const isSignedIn = !!user;
 
-    if (!isSignedIn && !inAuthScreen) {
+    if (!isSignedIn && !inAuthGroup) {
       router.replace("/(auth)");
-    } else if (isSignedIn && inAuthScreen) {
+    }
+
+    if (isSignedIn && inAuthGroup) {
       router.replace("/(tabs)");
     }
-  }, [isReady, newUser, token, segments]);
+  }, [user, segments, isCheckingAuth]);
 
-  if (!isReady) {
-    return null; // or your loading screen
+  if (isCheckingAuth) {
+    return null;
+    // Or return <ActivityIndicator />
   }
-
-
 
   return (
     <SafeAreaProvider>
       <SafeScreen>
         <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" />
           <Stack.Screen name="(auth)" />
+          <Stack.Screen name="(tabs)" />
         </Stack>
       </SafeScreen>
+
       <StatusBar style="dark" />
     </SafeAreaProvider>
   );
 }
-
-
-
-
-
-// return (
-//     <KeyboardAwareScrollView
-//       style={{ flex: 1 }}
-//       contentContainerStyle={{ flexGrow: 1 }}
-//       enableOnAndroid={true}
-//       enableAutomaticScroll={true}
-//       extraScrollHeight={30}
-//     >
-//       <View style={styles.container}>
-//         <Image source={require("../../assets/images/revenue-i4.png")} style={styles.illustration} />
-//         <Text style={styles.title}>Welcome Back</Text>
-
-//         {error ? (
-//           <View style={styles.errorBox}>
-//             <Ionicons name="alert-circle" size={20} color={COLORS.expense} />
-//             <Text style={styles.errorText}>{error}</Text>
-//             <TouchableOpacity onPress={() => setError("")}>
-//               <Ionicons name="close" size={20} color={COLORS.textLight} />
-//             </TouchableOpacity>
-//           </View>
-//         ) : null}
-
-//         <TextInput
-//           style={[styles.input, error && styles.errorInput]}
-//           autoCapitalize="none"
-//           value={emailAddress}
-//           placeholder="Enter email"
-//           placeholderTextColor="#9A8478"
-//           onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
-//         />
-
-//         <TextInput
-//           style={[styles.input, error && styles.errorInput]}
-//           value={password}
-//           placeholder="Enter password"
-//           placeholderTextColor="#9A8478"
-//           secureTextEntry={true}
-//           onChangeText={(password) => setPassword(password)}
-//         />
-
-//         <TouchableOpacity style={styles.button} onPress={onSignInPress}>
-//           <Text style={styles.buttonText}>Sign In</Text>
-//         </TouchableOpacity>
-
-//         <View style={styles.footerContainer}>
-//           <Text style={styles.footerText}>Don&apos;t have an account?</Text>
-
-//           <Link href="/sign-up" asChild>
-//             <TouchableOpacity>
-//               <Text style={styles.linkText}>Sign up</Text>
-//             </TouchableOpacity>
-//           </Link>
-//         </View>
-//       </View>
-//     </KeyboardAwareScrollView>
-//   );
-// }
