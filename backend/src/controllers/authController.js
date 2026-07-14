@@ -45,11 +45,11 @@ export const signup = async (req, res) => {
       res.status(201).json({
         token,
         user: {
-          id: newUser._id,
-          username: newUser.username,
-          email: newUser.email,
-          profilePic: newUser.profilePic,
-          createdAt: newUser.createdAt
+          id: user._id,
+          username: user.username,
+          email: user.email,
+          profilePic: user.profilePic,
+          createdAt: user.createdAt
         }
       });
 
@@ -81,11 +81,11 @@ export const login = async (req, res) => {
     res.status(201).json({
       token,
       user: {
-        id: newUser._id,
-        username: newUser.username,
-        email: newUser.email,
-        profilePic: newUser.profilePic,
-        createdAt: newUser.createdAt,
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        profilePic: user.profilePic,
+        createdAt: user.createdAt,
       }
       });
   } catch (error) {
