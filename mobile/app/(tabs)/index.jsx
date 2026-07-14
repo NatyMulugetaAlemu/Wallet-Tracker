@@ -1,6 +1,6 @@
 import { Link, useRouter } from "expo-router";
 import { Alert, FlatList, Image, RefreshControl, Text, TouchableOpacity, View } from "react-native";
-import { SignOutButton } from "@/components/SignOutButton";
+import SignOutButton from "../../components/SignOutButton";
 import { useTransactions } from "../../store/useTransactions";
 import { useEffect, useState } from "react";
 import PageLoader from "../../components/PageLoader";
@@ -10,35 +10,20 @@ import { BalanceCard } from "../../components/BalanceCard";
 import { TransactionItem } from "../../components/TransactionItem";
 import NoTransactionsFound from "../../components/NoTransactionsFound";
 import { API_URL } from "../../constants/api";
+import { useAuthStore } from "../../store/authStore";
 
 export default function Page() {
   const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
 
   const { transactions, summary, isLoading, loadData, deleteTransaction } = useTransactions();
+  const { authUser } = useAuthStore();
 
-  const [user, setUser] = useState(null);
 
-  const fetchUser = async () => {
-    try {
-      const response = await fetch(`${API_URL}/auth/check`, {
-        credentials: "include",
-      });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message);
-      }
-
-      setUser(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   useEffect(() => {
-    fetchUser();
+
     loadData();
   }, [loadData]);
 
@@ -48,11 +33,27 @@ export default function Page() {
     setRefreshing(false);
   };
 
+
+
   const handleDelete = (id) => {
-    Alert.alert("Delete Transaction", "Are you sure you want to delete this transaction?", [
-      { text: "Cancel", style: "cancel" },
-      { text: "Delete", style: "destructive", onPress: () => deleteTransaction(id) },
-    ]);
+    Alert.alert("Delete Transaction", "Are you sure you want to delete this transaction?",
+      [
+        { text: "Cancel", style: "cancel", },
+        {
+          text: "Delete", style: "destructive",
+          onPress: async () => {
+            const result = await deleteTransaction(id);
+            if (!result.success) {
+
+              Alert.alert(
+                "Error",
+                result.error
+              );
+            }
+          },
+        },
+      ]
+    );
   };
 
   if (isLoading && !refreshing) return <PageLoader />;
@@ -72,7 +73,7 @@ export default function Page() {
             <View style={styles.welcomeContainer}>
               <Text style={styles.welcomeText}>Welcome,</Text>
               <Text style={styles.usernameText}>
-                {user?.emailAddresses[0]?.emailAddress.split("@")[0]}
+                {authUser?.username}
               </Text>
             </View>
           </View>

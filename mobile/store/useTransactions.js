@@ -1,155 +1,180 @@
-import { useCallback, useState } from "react";
-import { Alert } from "react-native";
-import { API_URL } from "../constants/api";
+import { create } from "zustand";
+import { axiosInstance } from "../lib/axios";
 
-export const useTransactions = () => {
-  const [transactions, setTransactions] = useState([]);
-  const [summary, setSummary] = useState({
+export const useTransactions = create((set, get) => ({
+  transactions: [],
+  summary: {
     balance: 0,
     income: 0,
     expenses: 0,
-  });
+  },
 
-  const [isLoading, setIsLoading] = useState(false);
+  isLoading: false,
+  isCreating: false,
+  isDeleting: false,
+  isUpdating: false,
 
-  // Fetch all transactions
-  const fetchTransactions = useCallback(async () => {
-    try {
-      const response = await fetch(`${API_URL}/transactions`, {
-        credentials: "include",
-      });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to fetch transactions");
-      }
-
-      setTransactions(data);
-    } catch (error) {
-      console.error(error);
-      Alert.alert("Error", error.message);
-    }
-  }, []);
-
-  // Fetch summary
-  const fetchSummary = useCallback(async () => {
-    try {
-      const response = await fetch(`${API_URL}/transactions/summary`, {
-        credentials: "include",
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to fetch summary");
-      }
-
-      setSummary(data);
-    } catch (error) {
-      console.error(error);
-      Alert.alert("Error", error.message);
-    }
-  }, []);
-
-  // Load both together
-  const loadData = useCallback(async () => {
-    setIsLoading(true);
+  // Get transactions + summary
+  loadData: async () => {
+    set({ isLoading: true });
 
     try {
-      await Promise.all([
-        fetchTransactions(),
-        fetchSummary(),
+      const [
+        transactionsResponse,
+        summaryResponse,
+      ] = await Promise.all([
+        axiosInstance.get("/transactions"),
+        axiosInstance.get("/transactions/summary"),
       ]);
+
+
+      set({
+        transactions: transactionsResponse.data,
+        summary: summaryResponse.data,
+      });
+
+
+    } catch (error) {
+      console.log(
+        "Load transactions error:",
+        error.response?.data?.message
+      );
     } finally {
-      setIsLoading(false);
+      set({
+        isLoading: false,
+      });
     }
-  }, [fetchTransactions, fetchSummary]);
+  },
+
 
   // Create transaction
-  const createTransaction = async (transaction) => {
+  createTransaction: async (transaction) => {
+    set({
+      isCreating: true,
+    });
+
     try {
-      const response = await fetch(`${API_URL}/transactions`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(transaction),
+
+      const res = await axiosInstance.post(
+        "/transactions",
+        transaction
+      );
+
+
+      // reload data
+      await get().loadData();
+
+
+      return {
+        success: true,
+      };
+
+
+    } catch (error) {
+
+      return {
+        success: false,
+        error:
+          error.response?.data?.message ||
+          "Failed to create transaction",
+      };
+
+    } finally {
+
+      set({
+        isCreating: false,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message);
-      }
-
-      await loadData();
-
-      Alert.alert("Success", "Transaction created successfully");
-    } catch (error) {
-      console.error(error);
-      Alert.alert("Error", error.message);
     }
-  };
+  },
+
 
   // Update transaction
-  const updateTransaction = async (id, transaction) => {
+  updateTransaction: async (id, transaction) => {
+
+    set({
+      isUpdating: true,
+    });
+
+
     try {
-      const response = await fetch(`${API_URL}/transactions/${id}`, {
-        method: "PUT",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(transaction),
+
+      await axiosInstance.put(
+        `/transactions/${id}`,
+        transaction
+      );
+
+
+      await get().loadData();
+
+
+      return {
+        success: true,
+      };
+
+
+    } catch (error) {
+
+      return {
+        success: false,
+        error:
+          error.response?.data?.message ||
+          "Failed to update transaction",
+      };
+
+    } finally {
+
+      set({
+        isUpdating: false,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message);
-      }
-
-      await loadData();
-
-      Alert.alert("Success", "Transaction updated successfully");
-    } catch (error) {
-      console.error(error);
-      Alert.alert("Error", error.message);
     }
-  };
+  },
+
 
   // Delete transaction
-  const deleteTransaction = async (id) => {
+  deleteTransaction: async (id) => {
+
+    set({
+      isDeleting: true,
+    });
+
+
     try {
-      const response = await fetch(`${API_URL}/transactions/${id}`, {
-        method: "DELETE",
-        credentials: "include",
+
+      const res = await axiosInstance.delete(
+        `/transactions/${id}`
+      );
+
+
+      await get().loadData();
+
+
+      return {
+        success: true,
+        message: res.data.message,
+      };
+
+
+    } catch (error) {
+
+      return {
+        success: false,
+        error:
+          error.response?.data?.message ||
+          "Failed to delete transaction",
+      };
+
+
+    } finally {
+
+      set({
+        isDeleting: false,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message);
-      }
-
-      await loadData();
-
-      Alert.alert("Success", data.message);
-    } catch (error) {
-      console.error(error);
-      Alert.alert("Error", error.message);
     }
-  };
 
-  return {
-    transactions,
-    summary,
-    isLoading,
-    loadData,
-    createTransaction,
-    updateTransaction,
-    deleteTransaction,
-  };
-};
+  },
+
+}));

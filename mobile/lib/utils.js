@@ -1,16 +1,11 @@
-// this function will convert the createdAt to this format: "May 2023"
-export function formatMemberSince(dateString) {
+// lib/utils.js
+export function formatDate(dateString) {
+  // format date nicely
+  // example: from this 👉 2025-05-20 to this 👉 May 20, 2025
   const date = new Date(dateString);
-  const month = date.toLocaleString("default", { month: "short" });
-  const year = date.getFullYear();
-  return `${month} ${year}`;
-}
-
-// this function will convert the createdAt to this format: "May 15, 2023"
-export function formatPublishDate(dateString) {
-  const date = new Date(dateString);
-  const month = date.toLocaleString("default", { month: "long" });
-  const day = date.getDate();
-  const year = date.getFullYear();
-  return `${month} ${day}, ${year}`;
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 }

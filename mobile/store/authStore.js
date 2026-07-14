@@ -1,96 +1,66 @@
 import { create } from "zustand";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_URL } from "../constants/api";
+import { axiosInstance } from "../lib/axios.js";
+import toast from "react-hot-toast";
 
-export const useAuthStore = create((set) => ({
-  newUser: null,
-  token: null,
-  isLoading: false,
+export const useAuthStore = create((set, get) => ({
+  authUser: null,
+  isSigningUp: false,
+  isLoggingIn: false,
   isCheckingAuth: true,
 
-  signup: async (username, email, password) => {
-    set({ isLoading: true });
+   checkAuth: async () => {
     try {
-      const response = await fetch(`${API_URL}/auth/signup`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          email,
-          password,
-        }),
-      });
+      const res = await axiosInstance.get("/auth/check");
 
-      const data = await response.json();
-
-      console.log("Response data:", data);
-
-      if (!response.ok) throw new Error(data.message || "Something went wrong");
-
-      await AsyncStorage.setItem("newUser", JSON.stringify(data.newUser));
-      await AsyncStorage.setItem("token", data.token);
-
-      set({ token: data.token, newUser: data.newUser, isLoading: false });
-
-      return { success: true };
+      set({ authUser: res.data });
     } catch (error) {
-      set({ isLoading: false });
-      return { success: false, error: error.message };
-    }
-  },
-
-  login: async (email, password) => {
-    set({ isLoading: true });
-
-    try {
-       console.time("login-request");
-      const response = await fetch(`${API_URL}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
-
-      console.timeEnd("login-request");
-      const data = await response.json();
-
-      if (!response.ok) throw new Error(data.message || "Something went wrong");
-
-      await AsyncStorage.setItem("newUser", JSON.stringify(data.newUser));
-      await AsyncStorage.setItem("token", data.token);
-
-      set({ token: data.token, newUser: data.newUser, isLoading: false });
-
-      return { success: true };
-    } catch (error) {
-      set({ isLoading: false });
-      return { success: false, error: error.message };
-    }
-  },
-
-  checkAuth: async () => {
-    try {
-      const token = await AsyncStorage.getItem("token");
-      const newUserJson = await AsyncStorage.getItem("newUser");
-      const newUser = newUserJson ? JSON.parse(newUserJson) : null;
-
-      set({ token, newUser });
-    } catch (error) {
-      console.log("Auth check failed", error);
+      console.log("Error in checkAuth:", error);
+      set({ authUser: null });
     } finally {
       set({ isCheckingAuth: false });
     }
   },
 
-  logout: async () => {
-    await AsyncStorage.removeItem("token");
-    await AsyncStorage.removeItem("newUser");
-    set({ token: null, newUser: null });
+  signup: async (data) => {
+    set({ isSigningUp: true });
+    try {
+      const res = await axiosInstance.post("/auth/signup", data);
+      set({ authUser: res.data });
+      toast.success("Account created successfully");
+      
+    } catch (error) {
+      toast.error(error.response.data.message);
+    } finally {
+      set({ isSigningUp: false });
+    }
   },
+
+  login: async (data) => {
+    set({ isLoggingIn: true });
+    try {
+      const res = await axiosInstance.post("/auth/login", data);
+      set({ authUser: res.data });
+      toast.success("Logged in successfully");
+
+     
+    } catch (error) {
+      toast.error(error.response.data.message);
+    } finally {
+      set({ isLoggingIn: false });
+    }
+  },
+
+  logout: async () => {
+    try {
+      await axiosInstance.post("/auth/logout");
+      set({ authUser: null });
+      toast.success("Logged out successfully");
+     
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  },
+
+ 
+   
 }));

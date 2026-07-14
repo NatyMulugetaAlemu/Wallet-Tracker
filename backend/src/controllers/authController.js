@@ -38,20 +38,16 @@ export const signup = async (req, res) => {
 
     if (newUser) {
       // generate jwt token here
-      const token = generateToken(newUser._id, res);
+      generateToken(newUser._id, res);
       await newUser.save();
 
 
       res.status(201).json({
-        token,
-        newUser: {
-          id: newUser._id,
-          username: newUser.username,
-          email: newUser.email,
-          profilePic: newUser.profilePic,
-          createdAt: newUser.createdAt,
-        },
-
+        id: newUser._id,
+        username: newUser.username,
+        email: newUser.email,
+        profilePic: newUser.profilePic,
+        createdAt: newUser.createdAt
       });
 
 
@@ -67,9 +63,9 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const newUser = await User.findOne({ email });
+    const user = await User.findOne({ email });
 
-    if (!newUser) {
+    if (user) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
@@ -78,20 +74,17 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const token = generateToken(newUser._id, res);
+    generateToken(user._id, res);
     res.status(201).json({
-      token,
-      newUser: {
+     
         id: newUser._id,
         username: newUser.username,
         email: newUser.email,
         profilePic: newUser.profilePic,
         createdAt: newUser.createdAt,
-      },
-
     });
   } catch (error) {
-   console.error("Login Error:", error);
+    console.error("Login Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };

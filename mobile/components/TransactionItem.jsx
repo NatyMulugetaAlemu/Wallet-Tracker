@@ -20,7 +20,7 @@ export const TransactionItem = ({ item, onDelete }) => {
   const iconName = CATEGORY_ICONS[item.category] || "pricetag-outline";
 
   return (
-    <View style={styles.transactionCard} key={item.id}>
+    <View style={styles.transactionCard} key={item._id}>
       <TouchableOpacity style={styles.transactionContent}>
         <View style={styles.categoryIconContainer}>
           <Ionicons name={iconName} size={22} color={isIncome ? COLORS.income : COLORS.expense} />
@@ -35,10 +35,10 @@ export const TransactionItem = ({ item, onDelete }) => {
           >
             {isIncome ? "+" : "-"}${Math.abs(parseFloat(item.amount)).toFixed(2)}
           </Text>
-          <Text style={styles.transactionDate}>{formatDate(item.created_at)}</Text>
+          <Text style={styles.transactionDate}>{formatDate(item.createdAt)}</Text>
         </View>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.deleteButton} onPress={() => onDelete(item.id)}>
+      <TouchableOpacity style={styles.deleteButton} onPress={() => onDelete(item._id)}>
         <Ionicons name="trash-outline" size={20} color={COLORS.expense} />
       </TouchableOpacity>
     </View>

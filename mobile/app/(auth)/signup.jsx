@@ -10,18 +10,18 @@ import Toast from "react-native-toast-message";
 
 
 export default function Signup() {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
-
-
-  const { newUser, isLoading, signup, token } = useAuthStore();
+  const { isSigningUp, signup } = useAuthStore();
 
   const router = useRouter();
 
   const handleSignUp = async () => {
-    const result = await signup(username, email, password);
+  const result = signup(formData);
 
     if (!result.success) {
       Toast.show({
@@ -77,8 +77,13 @@ export default function Signup() {
                 style={styles.input}
                 placeholder="Enter your username"
                 placeholderTextColor={COLORS.placeholderText}
-                value={username}
-                onChangeText={setUsername}
+                value={formData.username}
+                onChangeText={(text) =>
+                  setFormData({
+                    ...formData,
+                    username: text,
+                  })
+                }
 
               />
             </View>
@@ -99,8 +104,13 @@ export default function Signup() {
                 style={styles.input}
                 placeholder="Enter your email"
                 placeholderTextColor={COLORS.placeholderText}
-                value={email}
-                onChangeText={setEmail}
+                value={formData.email}
+                onChangeText={(text) =>
+                  setFormData({
+                    ...formData,
+                    email: text,
+                  })
+                }
                 keyboardType="email-address"
                 autoCapitalize="none"
               />
@@ -123,8 +133,13 @@ export default function Signup() {
                 style={styles.input}
                 placeholder="Enter your password"
                 placeholderTextColor={COLORS.placeholderText}
-                value={password}
-                onChangeText={setPassword}
+                value={formData.password}
+                onChangeText={(text) =>
+                  setFormData({
+                    ...formData,
+                    password: text,
+                  })
+                }
                 secureTextEntry={!showPassword}
               />
 
@@ -143,8 +158,8 @@ export default function Signup() {
 
 
 
-          <TouchableOpacity style={styles.button} onPress={handleSignUp} disabled={isLoading}>
-            {isLoading ? (
+          <TouchableOpacity style={styles.button} onPress={handleSignUp} disabled={isSigningUp}>
+            {isSigningUp ? (
               <ActivityIndicator color="#fff" />
             ) : (
               <Text style={styles.buttonText}>Sign Up</Text>
