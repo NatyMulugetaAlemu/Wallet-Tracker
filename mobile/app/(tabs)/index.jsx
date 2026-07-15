@@ -16,7 +16,7 @@ export default function Page() {
   const [refreshing, setRefreshing] = useState(false);
 
   const { transactions, summary, isLoading, loadData, deleteTransaction } = useTransactions();
-const { user } = useAuthStore();
+  const { user } = useAuthStore();
 
 
 
@@ -35,18 +35,29 @@ const { user } = useAuthStore();
 
 
   const handleDelete = (id) => {
-    Alert.alert("Delete Transaction", "Are you sure you want to delete this transaction?",
+    Alert.alert(
+      "Delete Transaction",
+      "Are you sure you want to delete this transaction?",
       [
-        { text: "Cancel", style: "cancel", },
         {
-          text: "Delete", style: "destructive",
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
           onPress: async () => {
             const result = await deleteTransaction(id);
-            if (!result.success) {
 
+            if (result.success) {
+              Alert.alert(
+                "Success",
+                "Transaction deleted successfully."
+              );
+            } else {
               Alert.alert(
                 "Error",
-                result.error
+                result.error || "Failed to delete transaction."
               );
             }
           },
@@ -71,9 +82,9 @@ const { user } = useAuthStore();
             />
             <View style={styles.welcomeContainer}>
               <Text style={styles.welcomeText}>Welcome,</Text>
-             <Text style={styles.usernameText}>
-  {user?.username}
-</Text>
+              <Text style={styles.usernameText}>
+                {user?.username}
+              </Text>
             </View>
           </View>
           {/* RIGHT */}
@@ -82,8 +93,9 @@ const { user } = useAuthStore();
               <Ionicons name="add" size={20} color="#FFF" />
               <Text style={styles.addButtonText}>Add</Text>
             </TouchableOpacity>
-            <SignOutButton />
+<SignOutButton />
           </View>
+          
         </View>
 
         <BalanceCard summary={summary} />

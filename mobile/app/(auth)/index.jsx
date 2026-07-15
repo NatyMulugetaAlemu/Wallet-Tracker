@@ -1,17 +1,8 @@
-import {
-  View,
-  Text,
-  Image,
-  TextInput,
-  TouchableOpacity,
-  ActivityIndicator,
-  Alert,
-} from "react-native";
+import {View,Text,Image,TextInput,TouchableOpacity,ActivityIndicator,Alert} from "react-native";
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-
 import { COLORS } from "../../constants/colors";
 import { useAuthStore } from "../../store/authStore";
 import styles from "../../assets/styles/auth.styles";
@@ -20,8 +11,8 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
   const { isLoggingIn, login } = useAuthStore();
+  
   const router = useRouter();
 
   const handleLogin = async () => {

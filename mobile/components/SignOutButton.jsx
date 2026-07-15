@@ -3,7 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
 
 import { useAuthStore } from "../store/authStore";
-import styles from "../assets/styles/profile.styles";
+import {styles} from "../assets/styles/home.styles";
 import { COLORS } from "../constants/colors";
 
 export default function SignOutButton() {
@@ -47,7 +47,7 @@ export default function SignOutButton() {
 
   return (
     <TouchableOpacity
-      style={styles.logoutButton}
+      style={styles.addButton}
       onPress={confirmLogout}
     >
       <Ionicons
@@ -55,7 +55,7 @@ export default function SignOutButton() {
         size={20}
         color={COLORS.white}
       />
-      <Text style={styles.logoutText}>
+      <Text style={styles.addButtonText}>
         Logout
       </Text>
     </TouchableOpacity>

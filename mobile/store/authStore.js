@@ -13,10 +13,8 @@ export const useAuthStore = create((set) => ({
     set({ isSigningUp: true });
 
     try {
-     
-      const res = await axiosInstance.post("/auth/signup", userData);
 
-console.log("Signup response:", res.data);
+      const res = await axiosInstance.post("/auth/signup", userData);
 
       const { user, token } = res.data;
 
@@ -27,13 +25,8 @@ console.log("Signup response:", res.data);
 
       return { success: true };
     } catch (error) {
-      return {
-        success: false,
-        error:
-          error.response?.data?.message ||
-          error.message ||
-          "Something went wrong",
-      };
+      set({ isLoading: false });
+      return { success: false, error: error.message };
     } finally {
       set({ isSigningUp: false });
     }
@@ -54,13 +47,8 @@ console.log("Signup response:", res.data);
 
       return { success: true };
     } catch (error) {
-      return {
-        success: false,
-        error:
-          error.response?.data?.message ||
-          error.message ||
-          "Something went wrong",
-      };
+      set({ isLoading: false });
+      return { success: false, error: error.message };
     } finally {
       set({ isLoggingIn: false });
     }
@@ -82,12 +70,17 @@ console.log("Signup response:", res.data);
   },
 
   logout: async () => {
-    await AsyncStorage.removeItem("token");
-    await AsyncStorage.removeItem("user");
+    try {
+      await AsyncStorage.removeItem("token");
+      await AsyncStorage.removeItem("user");
+      set({ token: null, user: null });
+      return {
+        success: true,
+      };
 
-    set({
-      token: null,
-      user: null,
-    });
+    } catch (error) {
+      set({ isLoading: false });
+      return { success: false, error: error.message };
+    }
   },
 }));

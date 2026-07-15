@@ -11,74 +11,70 @@ export const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: 0,
   },
+ 
+
+ 
+
+
   header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 20,
-    paddingHorizontal: 0,
-    paddingVertical: 12,
-  },
-  headerLeft: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  headerLogo: {
-    width: 75,
-    height: 75,
-  },
-  welcomeContainer: {
-    flex: 1,
-  },
-  welcomeText: {
-    fontSize: 14,
-    color: COLORS.textLight,
-    marginBottom: 2,
-  },
-  usernameText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: COLORS.text,
-  },
-  headerRight: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: COLORS.text,
-  },
-  addButton: {
-    backgroundColor: COLORS.primary,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 24,
-    flexDirection: "row",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  addButtonText: {
-    color: COLORS.white,
-    fontWeight: "600",
-    marginLeft: 4,
-  },
-  logoutButton: {
-    padding: 10,
-    borderRadius: 20,
-    backgroundColor: COLORS.card,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: 24,
+},
+
+headerLeft: {
+  flexDirection: "row",
+  alignItems: "center",
+  flex: 1,
+},
+
+headerLogo: {
+  width: 50,
+  height: 50,
+  marginRight: 12,
+},
+
+welcomeContainer: {
+  justifyContent: "center",
+},
+
+welcomeText: {
+  fontSize: 14,
+  color: "#666",
+},
+
+usernameText: {
+  fontSize: 20,
+  fontWeight: "700",
+  color: "#222",
+},
+
+headerRight: {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "flex-end",
+},
+
+addButton: {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
+  backgroundColor: "#8B5E3C",
+  paddingHorizontal: 14,
+  height: 42,
+  borderRadius: 12,
+  marginRight: 12,
+},
+
+addButtonText: {
+  color: "#fff",
+  fontWeight: "600",
+  marginLeft: 6,
+},
+
+
+
   balanceCard: {
     backgroundColor: COLORS.card,
     borderRadius: 20,

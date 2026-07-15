@@ -2,14 +2,12 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
-
 import SafeScreen from "../components/SafeScreen";
 import { useAuthStore } from "../store/authStore";
 
 export default function RootLayout() {
   const router = useRouter();
   const segments = useSegments();
-
   const { checkAuth, user, isCheckingAuth } = useAuthStore();
 
   useEffect(() => {
@@ -44,7 +42,6 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" />
         </Stack>
       </SafeScreen>
-
       <StatusBar style="dark" />
     </SafeAreaProvider>
   );
