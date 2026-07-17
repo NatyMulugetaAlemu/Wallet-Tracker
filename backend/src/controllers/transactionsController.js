@@ -21,12 +21,24 @@ export async function createTransaction(req, res) {
 
 export async function getAllTransactions(req, res) {
   try {
+
+    console.log("Logged in user:", req.user._id);
+    console.log("Email:", req.user.email);
+
+
     const transactions = await Transaction.find({
       user: req.user._id,
     }).sort({ createdAt: -1 });
 
+
+    console.log("Transactions found:", transactions.length);
+
+
     res.status(200).json(transactions);
+
   } catch (error) {
+    console.log(error.message);
+
     res.status(500).json({
       message: error.message,
     });
