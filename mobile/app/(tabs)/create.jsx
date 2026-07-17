@@ -368,16 +368,10 @@ export default function CreateScreen() {
 
 
       {isLoading && (
-
-        <View style={styles.loadingContainer}>
-
-          <ActivityIndicator
-            size="large"
-            color={COLORS.primary}
-          />
-
-        </View>
-
+        <ActivityIndicator
+          size="large"
+          color={COLORS.primary}
+        />
       )}
 
 

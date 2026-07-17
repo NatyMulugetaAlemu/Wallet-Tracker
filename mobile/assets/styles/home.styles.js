@@ -252,4 +252,44 @@ ButtonText: {
   transactionsListContent: {
     paddingBottom: 20,
   },
+
+  deleteOverlay: {
+  position: "absolute",
+
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+
+  backgroundColor: "rgba(0,0,0,0.15)",
+
+  justifyContent: "center",
+  alignItems: "center",
+
+  zIndex: 999,
+},
+
+
+deleteBox: {
+  backgroundColor: COLORS.card,
+
+  padding: 25,
+
+  borderRadius: 20,
+
+  alignItems: "center",
+
+  elevation: 5,
+},
+
+
+deleteText: {
+  marginTop: 10,
+
+  color: COLORS.text,
+
+  fontSize: 16,
+
+  fontWeight: "600",
+},
 });

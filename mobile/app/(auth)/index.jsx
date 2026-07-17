@@ -1,4 +1,4 @@
-import {View,Text,Image,TextInput,TouchableOpacity,ActivityIndicator,Alert} from "react-native";
+import { View, Text, Image, TextInput, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -6,18 +6,27 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { COLORS } from "../../constants/colors";
 import { useAuthStore } from "../../store/authStore";
 import styles from "../../assets/styles/auth.styles";
+import Toast from "react-native-toast-message";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const { isLoggingIn, login } = useAuthStore();
-  
+
   const router = useRouter();
 
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
-      Alert.alert("Validation Error", "Please enter email and password.");
+      // Alert.alert("Validation Error", "Please enter email and password.");
+
+
+      Toast.show({
+        type: "error",
+        text1: "Validation Error",
+        text2: "Please enter email and password.",
+        visibilityTime: 3000,
+      });
       return;
     }
 
@@ -28,8 +37,19 @@ export default function Login() {
 
     if (result.success) {
       router.replace("/(tabs)");
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: "Logged in Successfully",
+        visibilityTime: 3000,
+      });
     } else {
-      Alert.alert("Login Failed", result.error);
+      Toast.show({
+        type: "error",
+        text1: "Login Failed",
+        text2: "Invalid email or password",
+        visibilityTime: 3000,
+      });
     }
   };
 

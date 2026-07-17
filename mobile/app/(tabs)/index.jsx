@@ -10,6 +10,7 @@ import { BalanceCard } from "../../components/BalanceCard";
 import { TransactionItem } from "../../components/TransactionItem";
 import NoTransactionsFound from "../../components/NoTransactionsFound";
 import { useAuthStore } from "../../store/authStore";
+import CustomAlert from "../../components/CustomAlert";
 
 export default function Page() {
   const router = useRouter();
@@ -18,7 +19,13 @@ export default function Page() {
   const { transactions, summary, isLoading, loadData, deleteTransaction } = useTransactions();
   const { user } = useAuthStore();
 
-
+  const [alert, setAlert] = useState({
+    visible: false,
+    type: "",
+    title: "",
+    message: "",
+    onConfirm: null,
+  });
 
 
   useEffect(() => {
@@ -35,35 +42,42 @@ export default function Page() {
 
 
   const handleDelete = (id) => {
-    Alert.alert(
-      "Delete Transaction",
-      "Are you sure you want to delete this transaction?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            const result = await deleteTransaction(id);
+    setAlert({
+      visible: true,
+      type: "warning",
+      title: "Delete Transaction",
+      message: "Are you sure you want to delete this transaction?",
+      onConfirm: async () => {
+        const result = await deleteTransaction(id);
 
-            if (result.success) {
-              Alert.alert(
-                "Success",
-                "Transaction deleted successfully."
-              );
-            } else {
-              Alert.alert(
-                "Error",
-                result.error || "Failed to delete transaction."
-              );
-            }
-          },
-        },
-      ]
-    );
+        setAlert({
+          visible: false,
+        });
+
+        if (result.success) {
+          setAlert({
+            visible: true,
+            type: "success",
+            title: "Success",
+            message: "Transaction deleted successfully.",
+            onConfirm: () => {
+              setAlert({ visible: false });
+            },
+          });
+        } else {
+          setAlert({
+            visible: true,
+            type: "error",
+            title: "Error",
+            message:
+              result.error || "Failed to delete transaction.",
+            onConfirm: () => {
+              setAlert({ visible: false });
+            },
+          });
+        }
+      },
+    });
   };
 
   if (isLoading && !refreshing) return <PageLoader />;
@@ -113,6 +127,27 @@ export default function Page() {
         ListEmptyComponent={<NoTransactionsFound />}
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      />
+
+      <CustomAlert
+        visible={alert.visible}
+        type={alert.type}
+        title={alert.title}
+        message={alert.message}
+        confirmText={
+          alert.type === "warning"
+            ? "Delete"
+            : "OK"
+        }
+        cancelText={
+          alert.type === "warning"
+            ? "Cancel"
+            : null
+        }
+        onConfirm={alert.onConfirm}
+        onCancel={() =>
+          setAlert({ visible: false })
+        }
       />
     </View>
   );
