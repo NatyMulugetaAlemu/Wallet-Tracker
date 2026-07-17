@@ -12,13 +12,8 @@ export const styles = StyleSheet.create({
     paddingBottom: 0,
   },
  
-
- 
-
-
   header: {
   flexDirection: "row",
-  justifyContent: "space-between",
   alignItems: "center",
   marginBottom: 24,
 },
@@ -32,7 +27,7 @@ headerLeft: {
 headerLogo: {
   width: 50,
   height: 50,
-  marginRight: 12,
+ 
 },
 
 welcomeContainer: {
@@ -56,7 +51,7 @@ headerRight: {
   justifyContent: "flex-end",
 },
 
-addButton: {
+Button: {
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "center",
@@ -67,10 +62,10 @@ addButton: {
   marginRight: 12,
 },
 
-addButtonText: {
+ButtonText: {
   color: "#fff",
   fontWeight: "600",
-  marginLeft: 6,
+  
 },
 
 

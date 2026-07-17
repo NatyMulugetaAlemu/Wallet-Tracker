@@ -47,7 +47,7 @@ export default function SignOutButton() {
 
   return (
     <TouchableOpacity
-      style={styles.addButton}
+      style={styles.Button}
       onPress={confirmLogout}
     >
       <Ionicons
@@ -55,9 +55,7 @@ export default function SignOutButton() {
         size={20}
         color={COLORS.white}
       />
-      <Text style={styles.addButtonText}>
-        Logout
-      </Text>
+      
     </TouchableOpacity>
   );
 }

@@ -89,13 +89,13 @@ export default function Page() {
           </View>
           {/* RIGHT */}
           <View style={styles.headerRight}>
-            <TouchableOpacity style={styles.addButton} onPress={() => router.push("create")}>
+            <TouchableOpacity style={styles.Button} onPress={() => router.push("create")}>
               <Ionicons name="add" size={20} color="#FFF" />
-              <Text style={styles.addButtonText}>Add</Text>
+              <Text style={styles.ButtonText}>Add</Text>
             </TouchableOpacity>
-<SignOutButton />
+            <SignOutButton />
           </View>
-          
+
         </View>
 
         <BalanceCard summary={summary} />
@@ -105,8 +105,6 @@ export default function Page() {
         </View>
       </View>
 
-      {/* FlatList is a performant way to render long lists in React Native. */}
-      {/* it renders items lazily — only those on the screen. */}
       <FlatList
         style={styles.transactionsList}
         contentContainerStyle={styles.transactionsListContent}
