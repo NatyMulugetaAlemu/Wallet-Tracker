@@ -38,9 +38,8 @@ export const signup = async (req, res) => {
 
     if (user) {
       // generate jwt token here
-       await user.save();
       const token = generateToken(user._id, res);
-     
+      await user.save();
 
 
       res.status(201).json({
@@ -59,9 +58,7 @@ export const signup = async (req, res) => {
     }
   } catch (error) {
     console.log("Error in signup controller", error.message);
-     res.status(500).json({
-    message: error.message,
-  });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
