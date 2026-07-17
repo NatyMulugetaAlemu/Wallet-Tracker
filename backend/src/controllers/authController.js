@@ -30,29 +30,29 @@ export const signup = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-   const salt = await bcrypt.genSalt(10);
-const hashedPassword = await bcrypt.hash(password, salt);
+    const user = new User({
+      username,
+      email,
+      password: hashedPassword,
+    });
+
+    if (user) {
+      // generate jwt token here
+       await user.save();
+      const token = generateToken(user._id, res);
+     
 
 
-const user = await User.create({
-  username,
-  email,
-  password: hashedPassword,
-});
+      res.status(201).json({
+        token,
+        user: {
+          id: user._id,
+          username: user.username,
+          email: user.email,
+          createdAt: user.createdAt
+        }
+      });
 
-
-const token = generateToken(user._id, res);
-
-
-res.status(201).json({
-  token,
-  user: {
-    id: user._id,
-    username: user.username,
-    email: user.email,
-    createdAt: user.createdAt,
-  },
-});
 
     } else {
       res.status(400).json({ message: "Invalid user data" });
