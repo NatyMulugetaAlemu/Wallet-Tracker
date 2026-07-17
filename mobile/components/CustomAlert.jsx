@@ -20,7 +20,7 @@ export default function CustomAlert({
   cancelText,
 }) {
   const colors = {
-    error: "#EF4444",
+    error: COLORS.primary,
     success:COLORS.primary,
     warning: COLORS.primary
   };

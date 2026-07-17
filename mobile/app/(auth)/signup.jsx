@@ -1,4 +1,4 @@
-import {View,Text,Image,TextInput,TouchableOpacity,ActivityIndicator,Alert,} from "react-native";
+import {View,Text,Image,TextInput,TouchableOpacity,ActivityIndicator,} from "react-native";
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -6,6 +6,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import styles from "../../assets/styles/auth.styles";
 import { COLORS } from "../../constants/colors";
 import { useAuthStore } from "../../store/authStore";
+import Toast from "react-native-toast-message";
 
 export default function Signup() {
   const [username, setUsername] = useState("");
@@ -17,33 +18,53 @@ export default function Signup() {
   const router = useRouter();
 
   const handleSignUp = async () => {
-    if (!username.trim() || !email.trim() || !password.trim()) {
-      Alert.alert("Validation Error", "Please fill in all fields.");
-      return;
-    }
-
-    if (password.length < 6) {
-      Alert.alert(
-        "Validation Error",
-        "Password must be at least 6 characters."
-      );
-      return;
-    }
-
-    const result = await signup({
-      username: username.trim(),
-      email: email.trim(),
-      password,
+  if (!username.trim() || !email.trim() || !password.trim()) {
+    Toast.show({
+      type: "error",
+      text1: "Validation Error",
+      text2: "Please fill in all fields.",
+      visibilityTime: 3000,
     });
+    return;
+  }
 
-    console.log("signup result:", result);
+  if (password.length < 6) {
+    Toast.show({
+      type: "error",
+      text1: "Validation Error",
+      text2: "Password must be at least 6 characters.",
+      visibilityTime: 3000,
+    });
+    return;
+  }
 
-    if (result.success) {
-      router.replace("/(tabs)");
-    } else {
-      Alert.alert("Signup Failed", result.error);
-    }
-  };
+  const result = await signup({
+    username: username.trim(),
+    email: email.trim(),
+    password,
+  });
+
+  console.log("signup result:", result);
+
+ if (result.success) {
+  Toast.show({
+    type: "success",
+    text1: "Success",
+    text2: "Account created successfully",
+  });
+
+  setTimeout(() => {
+    router.replace("/(tabs)");
+  }, 1000);
+} else {
+    Toast.show({
+      type: "error",
+      text1: "Signup Failed",
+      text2: result.error || "Something went wrong",
+      visibilityTime: 3000,
+    });
+  }
+};
 
   return (
     <KeyboardAwareScrollView

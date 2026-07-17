@@ -1,18 +1,12 @@
-import {
-  View,
-  Text,
-  Alert,
-  TouchableOpacity,
-  TextInput,
-  ActivityIndicator,
-} from "react-native";
+import { View, Text, TouchableOpacity, TextInput, ActivityIndicator, } from "react-native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
-
 import { styles } from "../../assets/styles/create.styles";
 import { COLORS } from "../../constants/colors";
 import { useTransactions } from "../../store/useTransactions";
+import { useCustomAlert } from "../../store/useCustomAlert";
+import CustomAlert from "../../components/CustomAlert";
 
 
 const CATEGORIES = [
@@ -38,13 +32,24 @@ export default function CreateScreen() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isExpense, setIsExpense] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const { alert, showAlert, hideAlert, } = useCustomAlert();
+
+  const showError = (message) => {
+    showAlert({
+      type: "error",
+      title: "Error",
+      message,
+      onConfirm: hideAlert,
+    });
+  };
+
 
 
 
   const handleCreate = async () => {
 
     if (!title.trim()) {
-      Alert.alert("Error", "Please enter a transaction title");
+      showError("Please enter a transaction title");
       return;
     }
 
@@ -54,13 +59,13 @@ export default function CreateScreen() {
       isNaN(parseFloat(amount)) ||
       parseFloat(amount) <= 0
     ) {
-      Alert.alert("Error", "Please enter a valid amount");
+      showError("Please enter a valid amount");
       return;
     }
 
 
     if (!selectedCategory) {
-      Alert.alert("Error", "Please select a category");
+      showError("Please select a category");
       return;
     }
 
@@ -84,19 +89,23 @@ export default function CreateScreen() {
 
 
     if (result.success) {
-      Alert.alert(
-        "Success",
-        "Transaction created successfully"
-      );
-
+      if (result.success) {
+  showAlert({
+    type: "success",
+    title: "Success",
+    message: "Transaction created successfully",
+    onConfirm: () => {
+      hideAlert();
       router.back();
+    },
+  });
+} else {
+  showError(result.error || "Failed to create transaction");
+}
+
 
     } else {
-
-      Alert.alert(
-        "Error",
-        result.error
-      );
+      showError(result.error);
 
     }
 
@@ -373,6 +382,16 @@ export default function CreateScreen() {
           color={COLORS.primary}
         />
       )}
+
+      <CustomAlert
+        visible={alert.visible}
+        type={alert.type}
+        title={alert.title}
+        message={alert.message}
+        confirmText="OK"
+        onConfirm={alert.onConfirm}
+        onCancel={hideAlert}
+      />
 
 
 
