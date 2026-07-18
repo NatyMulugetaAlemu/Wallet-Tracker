@@ -18,9 +18,6 @@ export default function Login() {
 
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
-      // Alert.alert("Validation Error", "Please enter email and password.");
-
-
       Toast.show({
         type: "error",
         text1: "Validation Error",

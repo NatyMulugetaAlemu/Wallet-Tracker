@@ -5,6 +5,8 @@ import { sendVerificationEmail } from "../lib/sendEmail.js";
 
 export const signup = async (req, res) => {
   const { username, email, password } = req.body;
+  const email = req.body.email?.trim().toLowerCase();
+  const code = req.body.code?.trim();
   try {
     if (!username || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
@@ -31,45 +33,44 @@ export const signup = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // const verificationCode = Math.floor(
-    //   100000 + Math.random() * 900000
-    // ).toString();
+    const verificationCode = Math.floor(
+      100000 + Math.random() * 900000
+    ).toString();
 
     const user = new User({
       username,
-      email,
+      email:email.toLowerCase(),
       password: hashedPassword,
-      // verificationCode,
-      // verificationCodeExpires:
-      //   Date.now() + 10 * 60 * 1000,
+      verificationCode,
+      verificationCodeExpires:
+        Date.now() + 10 * 60 * 1000,
     });
 
     if (user) {
-      const token = generateToken(user._id, res);
+      // const token = generateToken(user._id, res);
       await user.save();
 
-      // await sendVerificationEmail(
-      //   email,
-      //   verificationCode
-      // );
+      await sendVerificationEmail(
+        email,
+        verificationCode
+      );
 
-      // return res.status(201).json({
-      //   success: true,
-      //   message: "Verification code sent to email",
+      return res.status(201).json({
+        success: true,
+        message: "Verification code sent to email",
+      });
+
+      // res.status(201).json({
+      //   token,
+      //   user: {
+      //     id: user._id,
+      //     username: user.username,
+      //     email: user.email,
+      //     profilePic: user.profilePic,
+      //     createdAt: user.createdAt,
+      //   },
       // });
 
-      res.status(201).json({
-        token,
-        user: {
-          id: user._id,
-          username: user.username,
-          email: user.email,
-          profilePic: user.profilePic,
-          createdAt: user.createdAt,
-        },
-
-
-      });
     } else {
       res.status(400).json({ message: "Invalid user data" });
     }
@@ -81,7 +82,8 @@ export const signup = async (req, res) => {
 
 export const verifyEmail = async (req, res) => {
   try {
-    const { email, code } = req.body;
+    const email = req.body.email?.trim().toLowerCase();
+    const code = req.body.code?.trim();
 
     const user = await User.findOne({ email });
 
@@ -91,12 +93,21 @@ export const verifyEmail = async (req, res) => {
       });
     }
 
-    if (
-      user.verificationCode !== code ||
-      user.verificationCodeExpires < Date.now()
-    ) {
+    if (!user.verificationCode) {
       return res.status(400).json({
-        message: "Invalid or expired code",
+        message: "No verification code found",
+      });
+    }
+
+    if (user.verificationCode !== code) {
+      return res.status(400).json({
+        message: "Invalid verification code",
+      });
+    }
+
+    if (user.verificationCodeExpires < Date.now()) {
+      return res.status(400).json({
+        message: "Verification code expired",
       });
     }
 
@@ -106,19 +117,22 @@ export const verifyEmail = async (req, res) => {
 
     await user.save();
 
-    const token = generateToken(
-      user._id,
-      res
-    );
+    const token = generateToken(user._id, res);
 
     return res.status(200).json({
       success: true,
       token,
-      user,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        isVerified: user.isVerified,
+        profilePic: user.profilePic,
+      },
       message: "Email verified successfully",
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       message: error.message,
     });
   }
@@ -133,12 +147,12 @@ export const login = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid credentials" });
     }
 
-    // if (!user.isVerified) {
-    //   return res.status(400).json({
-    //     message:
-    //       "Please verify your email before logging in",
-    //   });
-    // }
+    if (!user.isVerified) {
+      return res.status(400).json({
+        message:
+          "Please verify your email before logging in",
+      });
+    }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {

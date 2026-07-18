@@ -65,7 +65,7 @@ export default function Signup() {
 
       setTimeout(() => {
         router.replace({
-          pathname: "/verify-email",
+          pathname: "/verifyemail",
           params: {
             email: email.trim(),
           },
