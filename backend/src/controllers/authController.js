@@ -45,7 +45,7 @@ export const signup = async (req, res) => {
     });
 
     if (user) {
-
+      const token = generateToken(user._id, res);
       await user.save();
 
       await sendVerificationEmail(
