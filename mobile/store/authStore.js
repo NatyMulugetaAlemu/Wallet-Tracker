@@ -32,55 +32,55 @@ export const useAuthStore = create((set) => ({
     }
   },
 
-  verifyEmail: async ({ email, code }) => {
-    try {
-      const response = await fetch(`${API_URL}/api/auth/verify-email`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          code,
-        }),
-      });
+  // verifyEmail: async ({ email, code }) => {
+  //   try {
+  //     const response = await fetch(`${API_URL}/api/auth/verify-email`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         email,
+  //         code,
+  //       }),
+  //     });
 
-      const data = await response.json();
+  //     const data = await response.json();
 
-      if (response.ok) {
-        await AsyncStorage.setItem("token", data.token);
+  //     if (response.ok) {
+  //       await AsyncStorage.setItem("token", data.token);
 
-        set({
-          user: data.user,
-          token: data.token,
-        });
+  //       set({
+  //         user: data.user,
+  //         token: data.token,
+  //       });
 
-        return { success: true };
-      }
+  //       return { success: true };
+  //     }
 
-      return {
-        success: false,
-        error: data.message,
-      };
+  //     return {
+  //       success: false,
+  //       error: data.message,
+  //     };
 
-      if (!response.ok) {
-        return {
-          success: false,
-          error: data.message,
-        };
-      }
+  //     if (!response.ok) {
+  //       return {
+  //         success: false,
+  //         error: data.message,
+  //       };
+  //     }
 
-      return {
-        success: true,
-      };
+  //     return {
+  //       success: true,
+  //     };
 
-    } catch (error) {
-      return {
-        success: false,
-        error: error.message,
-      };
-    }
-  },
+  //   } catch (error) {
+  //     return {
+  //       success: false,
+  //       error: error.message,
+  //     };
+  //   }
+  // },
 
   login: async (userData) => {
     set({ isLoggingIn: true });

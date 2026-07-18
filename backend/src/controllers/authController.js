@@ -31,32 +31,32 @@ export const signup = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const verificationCode = Math.floor(
-      100000 + Math.random() * 900000
-    ).toString();
+    // const verificationCode = Math.floor(
+    //   100000 + Math.random() * 900000
+    // ).toString();
 
     const user = new User({
       username,
       email,
       password: hashedPassword,
-      verificationCode,
-      verificationCodeExpires:
-        Date.now() + 10 * 60 * 1000,
+      // verificationCode,
+      // verificationCodeExpires:
+      //   Date.now() + 10 * 60 * 1000,
     });
 
     if (user) {
       const token = generateToken(user._id, res);
       await user.save();
 
-      await sendVerificationEmail(
-        email,
-        verificationCode
-      );
+      // await sendVerificationEmail(
+      //   email,
+      //   verificationCode
+      // );
 
-      return res.status(201).json({
-        success: true,
-        message: "Verification code sent to email",
-      });
+      // return res.status(201).json({
+      //   success: true,
+      //   message: "Verification code sent to email",
+      // });
 
       res.status(201).json({
         token,
@@ -133,12 +133,12 @@ export const login = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid credentials" });
     }
 
-    if (!user.isVerified) {
-      return res.status(400).json({
-        message:
-          "Please verify your email before logging in",
-      });
-    }
+    // if (!user.isVerified) {
+    //   return res.status(400).json({
+    //     message:
+    //       "Please verify your email before logging in",
+    //   });
+    // }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
