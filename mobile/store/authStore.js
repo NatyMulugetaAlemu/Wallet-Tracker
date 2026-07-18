@@ -47,6 +47,22 @@ export const useAuthStore = create((set) => ({
 
       const data = await response.json();
 
+      if (response.ok) {
+        await AsyncStorage.setItem("token", data.token);
+
+        set({
+          user: data.user,
+          token: data.token,
+        });
+
+        return { success: true };
+      }
+
+      return {
+        success: false,
+        error: data.message,
+      };
+
       if (!response.ok) {
         return {
           success: false,

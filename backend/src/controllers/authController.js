@@ -53,21 +53,11 @@ export const signup = async (req, res) => {
         verificationCode
       );
 
-      res.status(201).json({
+      return res.status(201).json({
         success: true,
         message: "Verification code sent to email",
       });
 
-
-      res.status(201).json({
-        token,
-        user: {
-          id: user._id,
-          username: user.username,
-          email: user.email,
-          createdAt: user.createdAt
-        }
-      });
 
 
     } else {
@@ -111,7 +101,8 @@ export const verifyEmail = async (req, res) => {
       res
     );
 
-    res.status(200).json({
+    return res.status(200).json({
+        success: true,
       token,
       user,
       message: "Email verified successfully",
@@ -129,7 +120,7 @@ export const login = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({  success: false,message: "Invalid credentials" });
     }
 
     if (!user.isVerified) {
@@ -141,11 +132,12 @@ export const login = async (req, res) => {
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({   success: false,message: "Invalid credentials" });
     }
 
     const token = generateToken(user._id, res);
-    res.status(201).json({
+     return res.status(201).json({
+        success: true,
       token,
       user: {
         id: user._id,
