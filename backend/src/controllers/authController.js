@@ -1,6 +1,7 @@
 import { generateToken } from "../lib/utils.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
+import { sendVerificationEmail } from "../lib/sendEmail.js";
 
 export const signup = async (req, res) => {
   const { username, email, password } = req.body;
@@ -30,16 +31,32 @@ export const signup = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    const verificationCode = Math.floor(
+      100000 + Math.random() * 900000
+    ).toString();
+
     const user = new User({
       username,
       email,
       password: hashedPassword,
+      verificationCode,
+      verificationCodeExpires:
+        Date.now() + 10 * 60 * 1000,
     });
 
     if (user) {
-      // generate jwt token here
-      const token = generateToken(user._id, res);
+
       await user.save();
+
+      await sendVerificationEmail(
+        email,
+        verificationCode
+      );
+
+      res.status(201).json({
+        success: true,
+        message: "Verification code sent to email",
+      });
 
 
       res.status(201).json({
@@ -62,6 +79,50 @@ export const signup = async (req, res) => {
   }
 };
 
+export const verifyEmail = async (req, res) => {
+  try {
+    const { email, code } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    if (
+      user.verificationCode !== code ||
+      user.verificationCodeExpires < Date.now()
+    ) {
+      return res.status(400).json({
+        message: "Invalid or expired code",
+      });
+    }
+
+    user.isVerified = true;
+    user.verificationCode = null;
+    user.verificationCodeExpires = null;
+
+    await user.save();
+
+    const token = generateToken(
+      user._id,
+      res
+    );
+
+    res.status(200).json({
+      token,
+      user,
+      message: "Email verified successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
 export const login = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -69,6 +130,13 @@ export const login = async (req, res) => {
 
     if (!user) {
       return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    if (!user.isVerified) {
+      return res.status(400).json({
+        message:
+          "Please verify your email before logging in",
+      });
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
@@ -85,7 +153,7 @@ export const login = async (req, res) => {
         email: user.email,
         createdAt: user.createdAt,
       }
-      });
+    });
   } catch (error) {
     console.error("Login Error:", error);
     res.status(500).json({ message: "Internal Server Error" });

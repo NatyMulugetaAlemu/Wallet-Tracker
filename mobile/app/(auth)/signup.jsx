@@ -1,4 +1,4 @@
-import {View,Text,Image,TextInput,TouchableOpacity,ActivityIndicator,} from "react-native";
+import { View, Text, Image, TextInput, TouchableOpacity, ActivityIndicator, } from "react-native";
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -14,57 +14,72 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const { isSigningUp, signup } = useAuthStore();
-  
+
   const router = useRouter();
 
   const handleSignUp = async () => {
-  if (!username.trim() || !email.trim() || !password.trim()) {
-    Toast.show({
-      type: "error",
-      text1: "Validation Error",
-      text2: "Please fill in all fields.",
-      visibilityTime: 3000,
+    if (!username.trim() || !email.trim() || !password.trim()) {
+      Toast.show({
+        type: "error",
+        text1: "Validation Error",
+        text2: "Please fill in all fields.",
+        visibilityTime: 3000,
+      });
+      return;
+    }
+
+    if (password.length < 6) {
+      Toast.show({
+        type: "error",
+        text1: "Validation Error",
+        text2: "Password must be at least 6 characters.",
+        visibilityTime: 3000,
+      });
+      return;
+    }
+
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      Toast.show({
+        type: "error",
+        text1: "Validation Error",
+        text2: "Invalid email format",
+        visibilityTime: 3000,
+      });
+      return;
+    }
+
+    const result = await signup({
+      username: username.trim(),
+      email: email.trim(),
+      password,
     });
-    return;
-  }
 
-  if (password.length < 6) {
-    Toast.show({
-      type: "error",
-      text1: "Validation Error",
-      text2: "Password must be at least 6 characters.",
-      visibilityTime: 3000,
-    });
-    return;
-  }
+    console.log("signup result:", result);
 
-  const result = await signup({
-    username: username.trim(),
-    email: email.trim(),
-    password,
-  });
+    if (result.success) {
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: "Account created successfully",
+      });
 
-  console.log("signup result:", result);
-
- if (result.success) {
-  Toast.show({
-    type: "success",
-    text1: "Success",
-    text2: "Account created successfully",
-  });
-
-  setTimeout(() => {
-    router.replace("/(tabs)");
-  }, 1000);
-} else {
-    Toast.show({
-      type: "error",
-      text1: "Signup Failed",
-      text2: result.error || "Something went wrong",
-      visibilityTime: 3000,
-    });
-  }
-};
+      setTimeout(() => {
+        router.replace({
+          pathname: "/verify-email",
+          params: {
+            email: email.trim(),
+          },
+        });
+      }, 1000);
+    } else {
+      Toast.show({
+        type: "error",
+        text1: "Signup Failed",
+        text2: result.error || "Something went wrong",
+        visibilityTime: 3000,
+      });
+    }
+  };
 
   return (
     <KeyboardAwareScrollView
