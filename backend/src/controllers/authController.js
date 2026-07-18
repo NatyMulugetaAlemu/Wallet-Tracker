@@ -48,10 +48,10 @@ export const signup = async (req, res) => {
       // const token = generateToken(user._id, res);
       await user.save();
 
-      await sendVerificationEmail(
-        email,
-        verificationCode
-      );
+      // await sendVerificationEmail(
+      //   email,
+      //   verificationCode
+      // );
 
       return res.status(201).json({
         success: true,
