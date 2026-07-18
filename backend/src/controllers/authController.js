@@ -5,8 +5,6 @@ import { sendVerificationEmail } from "../lib/sendEmail.js";
 
 export const signup = async (req, res) => {
   const { username, email, password } = req.body;
-  const email = req.body.email?.trim().toLowerCase();
-  const code = req.body.code?.trim();
   try {
     if (!username || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
@@ -39,7 +37,7 @@ export const signup = async (req, res) => {
 
     const user = new User({
       username,
-      email:email.toLowerCase(),
+      email,
       password: hashedPassword,
       verificationCode,
       verificationCodeExpires:
