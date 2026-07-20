@@ -1,7 +1,7 @@
 import { generateToken } from "../lib/utils.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
-import { sendVerificationEmail } from "../lib/sendEmail.js";
+
 
 export const signup = async (req, res) => {
   const { username, email, password } = req.body;

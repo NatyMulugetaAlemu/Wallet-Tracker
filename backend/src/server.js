@@ -14,8 +14,6 @@ import job from "./config/cron.js"
 
 import path from "path";
 
-console.log("Current folder:", process.cwd());
-console.log("ENV PATH TEST:", path.resolve(".env"));
 
 const app = express()
 const PORT = process.env.PORT || 5001
@@ -30,9 +28,6 @@ const PORT = process.env.PORT || 5001
 // if(process.env.NODE_ENV==="production"){
 //     job.start()
 // }
-console.log("EMAIL_USER:", process.env.EMAIL_USER);
-console.log("EMAIL_PASS exists:", !!process.env.EMAIL_PASS);
-
 app.use(rateLimiter)
 app.use(express.json())
 app.use(cookieParser());
