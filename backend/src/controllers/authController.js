@@ -31,36 +31,29 @@ export const signup = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const verificationCode = Math.floor(
-      100000 + Math.random() * 900000
-    ).toString();
-
     const user = new User({
       username,
       email,
       password: hashedPassword,
-      verificationCode,
-      verificationCodeExpires:
-        Date.now() + 10 * 60 * 1000,
     });
 
     if (user) {
+      const token = generateToken(user._id, res);
       await user.save();
 
-      console.log("Before email send");
+      res.status(201).json({
+        success:true,
+        token,
+        user: {
+          id: user._id,
+          username: user.username,
+          email: user.email,
+          profilePic: user.profilePic,
+          createdAt: user.createdAt,
+        },
 
-      await sendVerificationEmail(
-        email,
-        verificationCode
-      );
 
-      console.log("After email send");
-
-      return res.status(201).json({
-        success: true,
-        message: "Verification code sent to email",
       });
-
     } else {
       res.status(400).json({ message: "Invalid user data" });
     }
@@ -74,63 +67,6 @@ export const signup = async (req, res) => {
   }
 };
 
-export const verifyEmail = async (req, res) => {
-  try {
-    const email = req.body.email?.trim().toLowerCase();
-    const code = req.body.code?.trim();
-
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found",
-      });
-    }
-
-    if (!user.verificationCode) {
-      return res.status(400).json({
-        message: "No verification code found",
-      });
-    }
-
-    if (user.verificationCode !== code) {
-      return res.status(400).json({
-        message: "Invalid verification code",
-      });
-    }
-
-    if (user.verificationCodeExpires < Date.now()) {
-      return res.status(400).json({
-        message: "Verification code expired",
-      });
-    }
-
-    user.isVerified = true;
-    user.verificationCode = null;
-    user.verificationCodeExpires = null;
-
-    await user.save();
-
-    const token = generateToken(user._id, res);
-
-    return res.status(200).json({
-      success: true,
-      token,
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        isVerified: user.isVerified,
-        profilePic: user.profilePic,
-      },
-      message: "Email verified successfully",
-    });
-  } catch (error) {
-    return res.status(500).json({
-      message: error.message,
-    });
-  }
-};
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
@@ -139,13 +75,6 @@ export const login = async (req, res) => {
 
     if (!user) {
       return res.status(400).json({ success: false, message: "Invalid credentials" });
-    }
-
-    if (!user.isVerified) {
-      return res.status(400).json({
-        message:
-          "Please verify your email before logging in",
-      });
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);

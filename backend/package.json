@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
-"scripts": {
-  "dev": "node --dns-result-order=ipv4first ./node_modules/nodemon/bin/nodemon.js src/server.js"
-},
+  "scripts": {
+    "dev": "node --dns-result-order=ipv4first ./node_modules/nodemon/bin/nodemon.js src/server.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -23,7 +23,8 @@
     "express": "^4.21.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.7.4",
-    "nodemailer": "^9.0.3"
+    "nodemailer": "^9.0.3",
+    "resend": "^6.17.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

@@ -18,31 +18,7 @@ export const useAuthStore = create((set) => ({
       userData
     );
 
-    return {
-      success: true,
-      message: res.data.message,
-    };
-  } catch (error) {
-    return {
-      success: false,
-      error:
-        error.response?.data?.message ||
-        error.message,
-    };
-  } finally {
-    set({ isSigningUp: false });
-  }
-},
-
- 
-  verifyEmail: async (email, code) => {
-  try {
-    const res = await axiosInstance.post(
-      "/auth/verify-email",
-      { email, code }
-    );
-
-    const { user, token } = res.data;
+      const { user, token } = res.data;
 
     await AsyncStorage.setItem(
       "user",

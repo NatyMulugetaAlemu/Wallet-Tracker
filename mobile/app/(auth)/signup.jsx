@@ -64,12 +64,9 @@ export default function Signup() {
       });
 
       setTimeout(() => {
-        router.replace({
-          pathname: "/verifyemail",
-          params: {
-            email: email.trim(),
-          },
-        });
+        router.replace("/(tabs)");
+        // or router.replace("/login");
+        // whichever screen you want users to go to after signing up
       }, 1000);
     } else {
       Toast.show({
