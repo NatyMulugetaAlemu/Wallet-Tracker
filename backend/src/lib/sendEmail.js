@@ -1,17 +1,28 @@
+import dns from "node:dns";
 import nodemailer from "nodemailer";
+
+// Force Node.js to prefer IPv4 over IPv6
+dns.setDefaultResultOrder("ipv4first");
+
 
 export const sendVerificationEmail = async (email, code) => {
   console.log("EMAIL_USER:", process.env.EMAIL_USER);
   console.log("EMAIL_PASS exists:", !!process.env.EMAIL_PASS);
 
- const transporter = nodemailer.createTransport({
-  service: "gmail",
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+  tls: {
+    rejectUnauthorized: false,
+  },
 });
 
+ try {
   const info = await transporter.sendMail({
     from: process.env.EMAIL_USER,
     to: email,
@@ -22,6 +33,11 @@ export const sendVerificationEmail = async (email, code) => {
       <h1>${code}</h1>
     `,
   });
+
+  console.log(info);
+} catch (err) {
+  console.error(err);
+}
 
   console.log(info.messageId);
 };
