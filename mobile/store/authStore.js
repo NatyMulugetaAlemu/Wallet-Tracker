@@ -9,78 +9,63 @@ export const useAuthStore = create((set) => ({
   isLoggingIn: false,
   isCheckingAuth: true,
 
-  signup: async (userData) => {
-    set({ isSigningUp: true });
+ signup: async (userData) => {
+  set({ isSigningUp: true });
 
-    try {
+  try {
+    const res = await axiosInstance.post(
+      "/auth/signup",
+      userData
+    );
 
-      const res = await axiosInstance.post("/auth/signup", userData);
+    return {
+      success: true,
+      message: res.data.message,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error:
+        error.response?.data?.message ||
+        error.message,
+    };
+  } finally {
+    set({ isSigningUp: false });
+  }
+},
 
-      const { user, token } = res.data;
+ 
+  verifyEmail: async (email, code) => {
+  try {
+    const res = await axiosInstance.post(
+      "/auth/verify-email",
+      { email, code }
+    );
 
-      await AsyncStorage.setItem("user", JSON.stringify(user));
-      await AsyncStorage.setItem("token", token);
+    const { user, token } = res.data;
 
-      set({ user, token });
+    await AsyncStorage.setItem(
+      "user",
+      JSON.stringify(user)
+    );
 
-      return { success: true };
-    } catch (error) {
-      set({ isLoading: false });
-      return { success: false, error: error.message };
-    } finally {
-      set({ isSigningUp: false });
-    }
-  },
+    await AsyncStorage.setItem(
+      "token",
+      token
+    );
 
-  // verifyEmail: async ({ email, code }) => {
-  //   try {
-  //     const response = await fetch(`${API_URL}/api/auth/verify-email`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         email,
-  //         code,
-  //       }),
-  //     });
+    set({ user, token });
 
-  //     const data = await response.json();
-
-  //     if (response.ok) {
-  //       await AsyncStorage.setItem("token", data.token);
-
-  //       set({
-  //         user: data.user,
-  //         token: data.token,
-  //       });
-
-  //       return { success: true };
-  //     }
-
-  //     return {
-  //       success: false,
-  //       error: data.message,
-  //     };
-
-  //     if (!response.ok) {
-  //       return {
-  //         success: false,
-  //         error: data.message,
-  //       };
-  //     }
-
-  //     return {
-  //       success: true,
-  //     };
-
-  //   } catch (error) {
-  //     return {
-  //       success: false,
-  //       error: error.message,
-  //     };
-  //   }
-  // },
+    return { success: true };
+  } catch (error) {
+    return {
+      success: false,
+      error:
+        error.response?.data?.message ||
+        error.message,
+    };
+  }
+},
 
   login: async (userData) => {
     set({ isLoggingIn: true });
@@ -97,7 +82,7 @@ export const useAuthStore = create((set) => ({
 
       return { success: true };
     } catch (error) {
-      set({ isLoading: false });
+      set({ isLoggingIn: false });
       return { success: false, error: error.message };
     } finally {
       set({ isLoggingIn: false });
@@ -129,7 +114,6 @@ export const useAuthStore = create((set) => ({
       };
 
     } catch (error) {
-      set({ isLoading: false });
       return { success: false, error: error.message };
     }
   },

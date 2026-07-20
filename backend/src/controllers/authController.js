@@ -45,7 +45,6 @@ export const signup = async (req, res) => {
     });
 
     if (user) {
-      // const token = generateToken(user._id, res);
       await user.save();
 
       await sendVerificationEmail(
@@ -57,17 +56,6 @@ export const signup = async (req, res) => {
         success: true,
         message: "Verification code sent to email",
       });
-
-      // res.status(201).json({
-      //   token,
-      //   user: {
-      //     id: user._id,
-      //     username: user.username,
-      //     email: user.email,
-      //     profilePic: user.profilePic,
-      //     createdAt: user.createdAt,
-      //   },
-      // });
 
     } else {
       res.status(400).json({ message: "Invalid user data" });
