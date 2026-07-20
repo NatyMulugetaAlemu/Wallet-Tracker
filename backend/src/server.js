@@ -1,6 +1,5 @@
 import dotenv from "dotenv"
 dotenv.config()
-
 import authRoutes from './routes/authRoute.js';
 import transactionsRoute from "./routes/transactionsRoute.js"
 import { connectDB} from "./config/db.js"
