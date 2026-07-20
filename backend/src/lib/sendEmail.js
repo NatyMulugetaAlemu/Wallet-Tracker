@@ -34,13 +34,11 @@ const transporter = nodemailer.createTransport({
     `,
   });
 
-  console.log(info);
+  console.log(info.messageId); // ✅ Inside the try block
 } catch (err) {
-  console.error(err);
+  console.error("Email sending failed:", err);
+  throw err;
 }
-
-  console.log(info.messageId);
-};
 
 
 
