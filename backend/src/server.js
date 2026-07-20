@@ -1,14 +1,22 @@
-import express from "express"
+import dotenv from "dotenv"
+dotenv.config()
+
 import authRoutes from './routes/authRoute.js';
 import transactionsRoute from "./routes/transactionsRoute.js"
 import { connectDB} from "./config/db.js"
 import cookieParser from "cookie-parser";
 import rateLimiter from "../src/middleware/rateLimiter.js"
+
 import dns from "node:dns";
+import express from "express"
 dns.setServers(["1.1.1.1", "1.0.0.1"]);
-import dotenv from "dotenv"
-dotenv.config()
+
 import job from "./config/cron.js"
+
+import path from "path";
+
+console.log("Current folder:", process.cwd());
+console.log("ENV PATH TEST:", path.resolve(".env"));
 
 const app = express()
 const PORT = process.env.PORT || 5001
