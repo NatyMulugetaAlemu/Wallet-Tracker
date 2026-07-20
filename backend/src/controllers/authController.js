@@ -47,10 +47,12 @@ export const signup = async (req, res) => {
     if (user) {
       await user.save();
 
-      await sendVerificationEmail(
-        email,
-        verificationCode
-      );
+      // await sendVerificationEmail(
+      //   email,
+      //   verificationCode
+      // );
+
+      console.log("Verification code:", verificationCode);
 
       return res.status(201).json({
         success: true,
