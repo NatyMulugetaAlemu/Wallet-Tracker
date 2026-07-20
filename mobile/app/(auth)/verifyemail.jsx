@@ -13,10 +13,10 @@ export default function VerifyEmail() {
 
     const handleVerify = async () => {
         try {
-            const result = await verifyEmail({
+            const result = await verifyEmail(
                 email,
                 code,
-            });
+            );
 
             if (result.success) {
                 Toast.show({

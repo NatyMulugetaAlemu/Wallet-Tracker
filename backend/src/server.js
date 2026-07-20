@@ -23,7 +23,8 @@ const PORT = process.env.PORT || 5001
 // if(process.env.NODE_ENV==="production"){
 //     job.start()
 // }
-
+console.log("EMAIL_USER:", process.env.EMAIL_USER);
+console.log("EMAIL_PASS exists:", !!process.env.EMAIL_PASS);
 
 app.use(rateLimiter)
 app.use(express.json())
