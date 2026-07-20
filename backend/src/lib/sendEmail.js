@@ -8,8 +8,18 @@ dns.setDefaultResultOrder("ipv4first");
 export const sendVerificationEmail = async (email, code) => {
   console.log("EMAIL_USER:", process.env.EMAIL_USER);
   console.log("EMAIL_PASS exists:", !!process.env.EMAIL_PASS);
+
+  const result = await dns.promises.lookup("smtp.gmail.com", {
+  family: 4,
+});
+
+console.log("DNS lookup:", result);
+
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+ host: result.address,
+tls: {
+  servername: "smtp.gmail.com",
+},
   port: 587,
   secure: false,
   auth: {
