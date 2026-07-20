@@ -22,7 +22,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
- try {
+try {
   const info = await transporter.sendMail({
     from: process.env.EMAIL_USER,
     to: email,
@@ -39,6 +39,9 @@ const transporter = nodemailer.createTransport({
   console.error("Email sending failed:", err);
   throw err;
 }
+}
+
+
 
 
 
